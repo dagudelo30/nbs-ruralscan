@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rural NbS Scan — Demonstrator Artefacts</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background: #f8f7f4; color: #1a1a18; padding: 40px 24px; line-height: 1.5; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 26px; font-weight: 600; color: #0c447c; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #5f5e5a; margin-bottom: 8px; }
+  .meta { font-size: 11px; color: #888780; margin-bottom: 28px; }
+  .card { background: #fff; border: 1px solid #d3d1c7; border-radius: 8px; padding: 22px 26px; margin-bottom: 14px; transition: border-color .15s, box-shadow .15s; }
+  .card:hover { border-color: #0c447c; box-shadow: 0 2px 8px rgba(12,68,124,.08); }
+  .card a { text-decoration: none; color: inherit; display: block; }
+  .card h2 { font-size: 16px; font-weight: 600; color: #0c447c; margin-bottom: 4px; }
+  .card .desc { font-size: 12px; color: #444441; margin-bottom: 8px; }
+  .card .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 3px; background: #f1efe8; color: #5f5e5a; font-weight: 600; letter-spacing: .02em; }
+  .tag.draft { background: #faeeda; color: #633806; }
+  .tag.live { background: #e1f5ee; color: #085041; }
+  .footer { margin-top: 36px; padding-top: 14px; border-top: 1px solid #e8e7e3; font-size: 11px; color: #888780; }
+  .footer a { color: #0c447c; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Rural NbS Scan — Demonstrator Artefacts</h1>
+  <p class="subtitle">World Bank D591 · Alliance Bioversity International &amp; CIAT</p>
+  <p class="meta">Internal demonstrators for the methodology and TTL-facing tool. Mock data — Sierra Leone / agroforestry. Not contractual deliverables; these support the Phase 3 final presentation.</p>
+
+  <div class="card">
+    <a href="wireframe.html">
+      <h2>TTL Tool Wireframe (v0.7)</h2>
+      <p class="desc">Interactive mockup of the World Bank-facing decision support tool. Tabs: Setup, Opportunity Space, Project Risk, Priority Hotspots, NbS Comparison, Next Steps (plus Danger Zone and an internal Dev Notes tab). Variable Card pattern with raw-vs-transformed maps, two risk lenses (risk to rural livelihoods vs risk to the investment), real Sierra Leone admin geometry, and a Technical-mode toggle. Mock Sierra Leone agroforestry data.</p>
+      <div class="tags"><span class="tag draft">v0.7 draft</span><span class="tag">demonstrator</span><span class="tag">desktop · 1280px</span></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="dashboard.html">
+      <h2>Evidence &amp; Literature Interrogation Dashboard</h2>
+      <p class="desc">Interactive dashboard to explore registers and recipe tables. Interrogate suitability mapping parameters, biophysical and operational thresholds, hazard mitigation links, scorecard economics, and verbatim literature claims supporting our systematic reviews.</p>
+      <div class="tags"><span class="tag live">live</span><span class="tag">database interrogator</span><span class="tag">visual statistics</span><span class="tag">evidence-first</span></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="pipeline.html">
+      <h2>Pipeline Architecture (v0.5)</h2>
+      <p class="desc">One-page architecture diagram. Seven analytical modules · framework primitives inherited from Benson's water-harvesting recipe · maps to schema T0–T7 · scope guardrails. The shared reference for team planning conversations.</p>
+      <div class="tags"><span class="tag draft">v0.5 draft</span><span class="tag">architecture</span><span class="tag">team reference</span></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="pipeline_visualization.html">
+      <h2>Pipeline &amp; Architecture Spec</h2>
+      <p class="desc">Conceptual specifications, design diagrams, and data-flow visualizations for the four-layer architecture, the M0–M6 analytical modules, and the evidence-to-synthesis pipeline.</p>
+      <div class="tags"><span class="tag live">v0.5 · live</span><span class="tag">specifications</span><span class="tag">architecture</span><span class="tag">mermaid diagrams</span></div>
+    </a>
+  </div>
+
+
+  <div class="card">
+    <a href="schema.html">
+      <h2>Data Schema (T0–T7)</h2>
+      <p class="desc">The analytical backbone — eight tables the pipeline reads instead of hardcoding rules, plus an evidence &amp; configuration layer (Source · Evidence · Variable-Ontology · Family · Dataset-Binding registers). Entity-relationship diagram, field-level spec, and two draft-0 worked examples (Agroforestry · Water Harvesting &amp; Conservation) with CSV + JSON for every table. <strong>Structure frozen and machine-validated.</strong> The template every NbS recipe follows.</p>
+      <div class="tags"><span class="tag live">v0.3.0 · structure frozen</span><span class="tag draft">draft-0 content</span><span class="tag">schema</span><span class="tag">ERD · spec · registers</span></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="https://github.com/CIAT/nbs_ruralscan/tree/main/methodology/modules">
+      <h2>Module Specifications (M0–M6) ↗</h2>
+      <p class="desc">Detailed specification sheets for all seven analytical modules plus the M2b project-disaster-risk addendum. Defines the precise inputs, outputs, dependencies, and schema tables mapped to each step of the pipeline.</p>
+      <div class="tags"><span class="tag draft">v0.2.1 · spec'd</span><span class="tag">specifications</span><span class="tag">methodology</span></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="https://github.com/CIAT/nbs_ruralscan/blob/main/methodology/expert_opinion_protocol.md">
+      <h2>Expert Opinion Protocol ↗</h2>
+      <p class="desc">Methodological protocol for expert-opinion elicitation and integration (Task H focus). Establishes formal procedures for capturing consensus, weighting, and qualitative constraints when empirical literature is thin.</p>
+      <div class="tags"><span class="tag draft">v0.1 draft</span><span class="tag">protocol</span><span class="tag">expert elicitation</span></div>
+    </a>
+  </div>
+
+
+  <div class="footer">
+    <p>Edit workflow: clone <a href="https://github.com/CIAT/nbs_ruralscan/">CIAT/nbs_ruralscan</a> → open in Claude Code → modify files in <code>docs/</code> → commit + push. GitHub Pages auto-deploys within ~2 minutes. See <a href="README.md">docs/README.md</a> for the team workflow.</p>
+  </div>
+</div>
+</body>
+</html>

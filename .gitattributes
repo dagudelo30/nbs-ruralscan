@@ -1,0 +1,36 @@
+# Schema JSON is generated from the CSV source of truth — never hand-edit.
+# Run `python3 src/nbs_ruralscan/schema_tools/generate.py schema` after editing a CSV.
+# `linguist-generated` collapses these in GitHub diffs and labels them "generated".
+schema/*.json                  linguist-generated=true
+schema/recipes/**/*.json       linguist-generated=true
+schema/registers/*.json        linguist-generated=true
+
+# The column manifest is hand-authored, not generated — keep it visible in diffs.
+schema/structure/columns.json  -linguist-generated
+
+# Generated JSON is a deterministic function of the source CSVs, so a 3-way TEXT merge of it
+# is meaningless noise — two branches that both touched a register collide here even though
+# the content is fully rebuildable. The `regen` merge driver ignores both sides and rebuilds
+# from the merged CSVs (scripts/git-merge-regen.sh). The driver COMMAND lives in .git/config,
+# so run `bash scripts/setup-repo.sh` ONCE per clone to register it. Without setup, git just
+# falls back to a normal (conflicting) merge — no worse than before.
+docs/dashboard_data.json       merge=regen
+docs/progress.json             merge=regen
+schema/registers/*.json        merge=regen
+schema/*.json                  merge=regen
+schema/recipes/**/*.json       merge=regen
+# columns.json is hand-authored (not generated) — keep a normal text merge.
+schema/structure/columns.json  merge=text
+
+# Force LF on ALL CSVs cross-platform. The registers/recipes hold multiline quoted
+# fields (185+ EV rows have embedded newlines); on Windows, git autocrlf would rewrite
+# those embedded LFs to CRLF on checkout, producing ragged rows that crash the
+# QA "Apply decisions & rebuild" path with `dict contains fields not in fieldnames: None`
+# (issue #104). `text eol=lf` pins them to LF so the registers read identically everywhere.
+*.csv                          text eol=lf
+
+# Same class as the CSV fix, for Markdown: the Apply preflight checks methodology/discovery_logs/
+# *.md, and on Windows (autocrlf=true, before setup-repo.sh) git smudges them to CRLF at
+# checkout — `integrity_problems()` then flags them and Apply returns 400 (issue #190). Pin all
+# *.md to LF so a fresh Windows clone reads identically. (Run `git add --renormalize .` once.)
+*.md                           text eol=lf

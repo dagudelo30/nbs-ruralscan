@@ -1,0 +1,9 @@
+variable,country_iso3,value,year,source_dataset_id,note
+extension_governance,SLE,,,wb_wgi_governance,TODO -- descargar de worldbank.org/en/publication/worldwide-governance-indicators
+extension_governance,HTI,,,wb_wgi_governance,TODO -- descargar de worldbank.org/en/publication/worldwide-governance-indicators
+finance_credit_access,SLE,,,wb_findex_access,TODO -- descargar de worldbank.org/en/publication/globalfindex
+finance_credit_access,HTI,,,wb_findex_access,TODO -- descargar de worldbank.org/en/publication/globalfindex
+market_value_chain,SLE,,,faostat_country_indicators,TODO -- descargar de fao.org/faostat
+market_value_chain,HTI,,,faostat_country_indicators,TODO -- descargar de fao.org/faostat
+labour_availability,SLE,,,ilo_labour_statistics,TODO -- descargar de ilostat.ilo.org
+labour_availability,HTI,,,ilo_labour_statistics,TODO -- descargar de ilostat.ilo.org

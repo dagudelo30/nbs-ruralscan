@@ -1,0 +1,2213 @@
+[
+  {
+    "canonical_variable_id": "slope",
+    "label": "Terrain slope",
+    "aliases": [
+      "gradient",
+      "slope %",
+      "slope degrees"
+    ],
+    "canonical_unit": "degrees",
+    "unit_conversions": {
+      "pct->deg": "atan",
+      "ratio->deg": "atan"
+    },
+    "group_id": "topographic",
+    "candidate_dataset_ids": [
+      "srtm_dem_30m",
+      "srtm_dem_90m"
+    ],
+    "min_meaningful_resolution_m": 90,
+    "resolution_sensitivity": "high",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "annual_precipitation",
+    "label": "Mean annual precipitation",
+    "aliases": [
+      "BIO12",
+      "MAP",
+      "annual rainfall"
+    ],
+    "canonical_unit": "mm/year",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "worldclim_v2_precip",
+      "chelsa_bioclim_v21_baseline",
+      "chirps_precipitation_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "mean_annual_temperature",
+    "label": "Mean annual temperature",
+    "aliases": [
+      "BIO1",
+      "MAT"
+    ],
+    "canonical_unit": "degC",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "worldclim_v2_bioclim",
+      "chelsa_bioclim_v21_baseline"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "soil_ph",
+    "label": "Topsoil pH (0-30 cm)",
+    "aliases": [
+      "pH",
+      "soil reaction"
+    ],
+    "canonical_unit": "pH_units",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "soil_organic_carbon",
+    "label": "Topsoil organic carbon (0-30 cm)",
+    "aliases": [
+      "SOC",
+      "organic carbon"
+    ],
+    "canonical_unit": "g/kg",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2",
+      "fao_gsoc_map"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "soil_drainage",
+    "label": "Soil drainage class",
+    "aliases": [
+      "drainage class"
+    ],
+    "canonical_unit": "ordinal_1_7",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "hwsd_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "land_cover",
+    "label": "Land cover / land use class",
+    "aliases": [
+      "LULC",
+      "land cover class"
+    ],
+    "canonical_unit": "categorical",
+    "unit_conversions": {},
+    "group_id": "land_use",
+    "candidate_dataset_ids": [
+      "esa_worldcover_2021"
+    ],
+    "min_meaningful_resolution_m": 10,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "protected_area_status",
+    "label": "Protected-area status (IUCN category)",
+    "aliases": [
+      "WDPA category",
+      "IUCN cat"
+    ],
+    "canonical_unit": "categorical",
+    "unit_conversions": {},
+    "group_id": "governance",
+    "candidate_dataset_ids": [
+      "protected_areas_wdpa"
+    ],
+    "min_meaningful_resolution_m": 30,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "distance_to_road",
+    "label": "Distance to nearest road",
+    "aliases": [
+      "road access",
+      "market access proxy"
+    ],
+    "canonical_unit": "km",
+    "unit_conversions": {
+      "m->km": "/1000"
+    },
+    "group_id": "infrastructure",
+    "candidate_dataset_ids": [
+      "osm_road_network"
+    ],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "aridity_index",
+    "label": "Aridity Index (P/PET)",
+    "aliases": [
+      "AI",
+      "UNEP aridity index"
+    ],
+    "canonical_unit": "dimensionless",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "global_aridity_index_v3"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "tree_canopy_cover",
+    "label": "Tree canopy cover",
+    "aliases": [
+      "canopy cover",
+      "tree cover"
+    ],
+    "canonical_unit": "percent",
+    "unit_conversions": {},
+    "group_id": "land_use",
+    "candidate_dataset_ids": [
+      "hansen_treecover2000"
+    ],
+    "min_meaningful_resolution_m": 30,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "soil_texture_hsg",
+    "label": "Soil texture / Hydrologic Soil Group",
+    "aliases": [
+      "HSG",
+      "texture class"
+    ],
+    "canonical_unit": "categorical",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "hwsd_v2",
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "drainage_density",
+    "label": "Drainage density",
+    "aliases": [
+      "stream density"
+    ],
+    "canonical_unit": "km/km2",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite",
+      "srtm_dem_30m"
+    ],
+    "min_meaningful_resolution_m": 90,
+    "resolution_sensitivity": "high",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "stream_order",
+    "label": "Stream order (Strahler)",
+    "aliases": [
+      "Strahler order"
+    ],
+    "canonical_unit": "ordinal",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite",
+      "srtm_dem_30m"
+    ],
+    "min_meaningful_resolution_m": 90,
+    "resolution_sensitivity": "high",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "permanent_water",
+    "label": "Permanent water body",
+    "aliases": [
+      "surface water",
+      "water occurrence"
+    ],
+    "canonical_unit": "percent_occurrence",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "esa_worldcover_2021"
+    ],
+    "min_meaningful_resolution_m": 30,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "drought_spei12_baseline",
+    "label": "Drought severity (SPEI-12, baseline)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "spei_global_v26"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "heat_stress_tmax_baseline",
+    "label": "Heat stress (Tmax warmest month)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "chelsa_bioclim_v21_baseline"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "flood_exposure_baseline",
+    "label": "Flood hazard proxy (precip wettest month)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "chelsa_bioclim_v21_baseline"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "agricultural_cropland_exposure",
+    "label": "Cropland exposure fraction",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "land_use",
+    "candidate_dataset_ids": [
+      "esa_worldcover_2021"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "population_exposure_rural",
+    "label": "Rural population exposure",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "socioeconomic",
+    "candidate_dataset_ids": [
+      "worldpop_population_density"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "soil_degradation_sensitivity",
+    "label": "Soil degradation sensitivity",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "adaptive_capacity_road_access",
+    "label": "Adaptive capacity (road access)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "infrastructure",
+    "candidate_dataset_ids": [
+      "osm_road_network"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "drought_spei12_ssp245_2050",
+    "label": "Projected drought severity (SSP2-4.5)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "chelsa_bioclim_ssp245_2050"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "flood_hazard_runoff_depth",
+    "label": "Flood hazard (runoff depth)",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "rainfall_variability_exposure",
+    "label": "Rainfall variability exposure",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "chirps_precipitation_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "soil_permeability_sensitivity",
+    "label": "Soil permeability sensitivity",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "rural_poverty_headcount",
+    "label": "Rural poverty headcount",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "socioeconomic",
+    "candidate_dataset_ids": [
+      "world_bank_poverty_pip"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "carbon_sequestration_potential",
+    "label": "Carbon sequestration potential",
+    "aliases": [
+      "GSOCseq",
+      "SOC seq potential",
+      "soc_sequestration_potential"
+    ],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "carbon",
+    "candidate_dataset_ids": [
+      "fao_gsoc_map",
+      "fao_gsocseq"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "food_security_risk",
+    "label": "Food-security risk",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "socioeconomic",
+    "candidate_dataset_ids": [
+      "world_bank_poverty_pip"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "biodiversity_conservation_priority",
+    "label": "Biodiversity conservation priority",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "biodiversity",
+    "candidate_dataset_ids": [
+      "protected_areas_wdpa"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "soil_degradation_risk",
+    "label": "Soil degradation risk",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "road_infrastructure_access",
+    "label": "Road infrastructure access",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "infrastructure",
+    "candidate_dataset_ids": [
+      "osm_road_network"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "climate_drought_hazard",
+    "label": "Climate drought hazard",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "spei_global_v26"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "tree_cover_gap",
+    "label": "Tree-cover gap",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "land_use",
+    "candidate_dataset_ids": [
+      "hansen_treecover2000"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "agricultural_water_deficit",
+    "label": "Agricultural water deficit",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "chirps_precipitation_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "runoff_potential_index",
+    "label": "Surface runoff potential",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "soil_erosion_risk",
+    "label": "Soil erosion risk",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "groundwater_recharge_potential",
+    "label": "Groundwater recharge potential",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "flood_risk",
+    "label": "Flood risk",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "scs_cn_runoff_composite"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "water_access_deficit",
+    "label": "Water-access deficit",
+    "aliases": [],
+    "canonical_unit": "index_or_native",
+    "unit_conversions": {},
+    "group_id": "socioeconomic",
+    "candidate_dataset_ids": [
+      "world_bank_poverty_pip"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "cocoa_distribution",
+    "label": "Cocoa distribution / harvested area",
+    "aliases": [
+      "cocoa area",
+      "cocoa harvested area",
+      "cocoa production"
+    ],
+    "canonical_unit": "fraction_or_ha",
+    "unit_conversions": {},
+    "group_id": "land_use",
+    "candidate_dataset_ids": [
+      "mapspam_cocoa_2020"
+    ],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "evapotranspiration_ref",
+    "label": "Reference evapotranspiration (ET0)",
+    "aliases": [
+      "Global-ET0",
+      "Global Reference Evapotranspiration",
+      "ET0",
+      "PET"
+    ],
+    "canonical_unit": "mm/day",
+    "unit_conversions": {},
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "global_aridity_index_v3"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_et0_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "soil_bulk_density",
+    "label": "Bulk density (0-30 cm)",
+    "aliases": [
+      "BD",
+      "bulk density"
+    ],
+    "canonical_unit": "kg/dm3",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_bd_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "soil_ph_subsoil",
+    "label": "Subsoil pH (30-100 cm)",
+    "aliases": [
+      "pH subsoil"
+    ],
+    "canonical_unit": "pH_units",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "rejected",
+    "raised_by": "ev_phsub_nath21",
+    "raised_date": "2026-06-05",
+    "comment": "Deferred: pilot uses topsoil 0-30 cm only via the topsoil canonical (soil_ph / soil_organic_carbon). Per v0.2.5 worked example, depth-stratified pairs are option (b) for a future v0.3.x schema increment; re-authored when subsoil binding becomes operationally needed."
+  },
+  {
+    "canonical_variable_id": "soil_organic_carbon_subsoil",
+    "label": "Subsoil organic carbon (30-100 cm)",
+    "aliases": [
+      "SOC subsoil"
+    ],
+    "canonical_unit": "g/kg",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "rejected",
+    "raised_by": "ev_socsub_nath21",
+    "raised_date": "2026-06-05",
+    "comment": "Deferred: pilot uses topsoil 0-30 cm only via the topsoil canonical (soil_ph / soil_organic_carbon). Per v0.2.5 worked example, depth-stratified pairs are option (b) for a future v0.3.x schema increment; re-authored when subsoil binding becomes operationally needed."
+  },
+  {
+    "canonical_variable_id": "soil_texture",
+    "label": "Soil texture (USDA class)",
+    "aliases": [
+      "texture",
+      "soil texture code"
+    ],
+    "canonical_unit": "class",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_tex_nath21",
+    "raised_date": "2026-06-05",
+    "comment": "Canonical USDA-class soil texture. Complementary to soil_texture_hsg (HSG hydrology classification) — not a duplicate. Both stay canonical."
+  },
+  {
+    "canonical_variable_id": "soil_cation_exchange_capacity",
+    "label": "Cation exchange capacity (topsoil)",
+    "aliases": [
+      "CEC"
+    ],
+    "canonical_unit": "cmol/kg",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_cec_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "soil_available_water_capacity",
+    "label": "Available water capacity (root zone)",
+    "aliases": [
+      "AWC",
+      "plant-available water"
+    ],
+    "canonical_unit": "mm",
+    "unit_conversions": {},
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_awc_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "elevation",
+    "label": "Terrain elevation",
+    "aliases": [
+      "altitude",
+      "DEM"
+    ],
+    "canonical_unit": "m",
+    "unit_conversions": {},
+    "group_id": "topographic",
+    "candidate_dataset_ids": [
+      "srtm_dem_90m",
+      "srtm_dem_30m"
+    ],
+    "min_meaningful_resolution_m": 90,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical"
+  },
+  {
+    "canonical_variable_id": "aspect",
+    "label": "Slope aspect (terrain direction)",
+    "aliases": [
+      "aspect",
+      "slope aspect"
+    ],
+    "canonical_unit": "degrees",
+    "unit_conversions": {},
+    "group_id": "topographic",
+    "candidate_dataset_ids": [
+      "srtm_dem_30m",
+      "srtm_dem_90m"
+    ],
+    "min_meaningful_resolution_m": 90,
+    "resolution_sensitivity": "high",
+    "derive_then_aggregate": true,
+    "review_status": "canonical",
+    "raised_by": "ev_aspect_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "ndvi",
+    "label": "NDVI",
+    "aliases": [
+      "NDVI",
+      "vegetation index"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "land_cover_vegetation",
+    "candidate_dataset_ids": [
+      "mod13q1_ndvi"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_ndvi_nath21",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "built_up_areas",
+    "label": "Built-up areas (points/polygons)",
+    "aliases": [
+      "built-up",
+      "settlement points"
+    ],
+    "canonical_unit": "boolean_or_distance",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "ghsl_built_up"
+    ],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_builtup_nath21",
+    "raised_date": "2026-06-05",
+    "comment": "Could be merged with population_exposure_rural or treated as proximity variable."
+  },
+  {
+    "canonical_variable_id": "soil_erosion_wind",
+    "label": "Wind erosion risk (erodibility index)",
+    "aliases": [
+      "wind erodibility"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "hazard",
+    "candidate_dataset_ids": [
+      "ssurgo_wind_erodibility"
+    ],
+    "min_meaningful_resolution_m": 800,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_erosion_wind_castle25",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "water_quality_nitrate",
+    "label": "Water-quality nitrate violation probability",
+    "aliases": [
+      "nitrate violation index"
+    ],
+    "canonical_unit": "probability",
+    "group_id": "hazard",
+    "candidate_dataset_ids": [
+      "epa_nitrate_violation_index"
+    ],
+    "min_meaningful_resolution_m": 500,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_nitrate_castle25",
+    "raised_date": "2026-06-05",
+    "comment": "Could be modelled as priority_need (T5) instead of structural_suitability (T4) — water quality is an opportunity-space concern, not a tree-growth constraint."
+  },
+  {
+    "canonical_variable_id": "frost_free_period",
+    "label": "Frost-free period (days)",
+    "aliases": [
+      "FFP",
+      "frost-free season"
+    ],
+    "canonical_unit": "days",
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "ssurgo_frostfree"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_frostfree_castle25",
+    "raised_date": "2026-06-05",
+    "comment": "Temperate-zone climate constraint. Distinct from mean_annual_temperature."
+  },
+  {
+    "canonical_variable_id": "soil_depth_to_bedrock",
+    "label": "Soil depth to bedrock",
+    "aliases": [
+      "depth to bedrock",
+      "soil depth"
+    ],
+    "canonical_unit": "cm",
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "ssurgo_statsgo",
+      "isric_soilgrids250_v2"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "review_status": "canonical"
+  },
+  {
+    "canonical_variable_id": "set_aside_conservation",
+    "label": "Set-aside conservation program coverage",
+    "aliases": [
+      "CRP coverage",
+      "conservation easements"
+    ],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nass_census_2022"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_setaside_castle25",
+    "raised_date": "2026-06-05",
+    "comment": "US-specific (NASS county-level). Decide: drop, generalise (e.g. 'protected/conservation land coverage'), or keep as country-binding variable."
+  },
+  {
+    "canonical_variable_id": "rotational_grazing",
+    "label": "Rotational grazing prevalence",
+    "aliases": [],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nass_census_2022"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_rotgraze_castle25",
+    "raised_date": "2026-06-05",
+    "comment": "Silvopasture-specific (F3 family). Likely not relevant to F1 silvoarable — flag for family-routing decision."
+  },
+  {
+    "canonical_variable_id": "rented_lands",
+    "label": "Rented agricultural land share",
+    "aliases": [
+      "tenure (renter)"
+    ],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nass_census_2022"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_rented_castle25",
+    "raised_date": "2026-06-05",
+    "comment": "Tenure proxy. Could merge with a generic 'tenure security' canonical."
+  },
+  {
+    "canonical_variable_id": "beginning_farmers",
+    "label": "Beginning-farmer share",
+    "aliases": [],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nass_census_2022"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_beginfarmers_castle25",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "hired_labor",
+    "label": "Hired labour reporting share",
+    "aliases": [],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nass_census_2022"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_hiredlabor_castle25",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "solar_radiation",
+    "label": "Solar radiation (annual mean / daily mean)",
+    "aliases": [
+      "radiation",
+      "insolation",
+      "PAR"
+    ],
+    "canonical_unit": "W/m2",
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "worldclim_v2_srad",
+      "nasa_power"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_radiation_palma07",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "geology",
+    "label": "Geological substrate (lithology)",
+    "aliases": [
+      "lithology",
+      "geological units"
+    ],
+    "canonical_unit": "class",
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [
+      "onegeology"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_geology_mendonca22",
+    "raised_date": "2026-06-05",
+    "comment": "Mendonça (Embrapa-style) ranked classes; may be redundant with soil_texture in coarse-resolution analyses."
+  },
+  {
+    "canonical_variable_id": "land_capability",
+    "label": "Land-use capability class (FAO/Brazilian I-VIII)",
+    "aliases": [
+      "PLUC",
+      "land capability"
+    ],
+    "canonical_unit": "class",
+    "group_id": "land_cover_vegetation",
+    "candidate_dataset_ids": [
+      "faogaez_landcap"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "ev_pluc_mendonca22",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "forest_fragment_size",
+    "label": "Forest fragment size (ha)",
+    "aliases": [
+      "forest patch size"
+    ],
+    "canonical_unit": "ha",
+    "group_id": "land_cover_vegetation",
+    "candidate_dataset_ids": [
+      "hansen_treecover2000"
+    ],
+    "min_meaningful_resolution_m": 30,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "review_status": "canonical",
+    "raised_by": "ev_forestfrag_mendonca22",
+    "raised_date": "2026-06-05",
+    "comment": "Derived from forest cover layer + patch analysis; agroforestry-priority signal (Brazilian Atlantic Forest restoration framing)."
+  },
+  {
+    "canonical_variable_id": "drought_hazard",
+    "label": "Drought hazard (SPEI / annualised severity)",
+    "aliases": [
+      "SPEI",
+      "drought severity"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "spei_global_v26",
+      "chirps_precipitation_v2"
+    ],
+    "min_meaningful_resolution_m": 5000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low"
+  },
+  {
+    "canonical_variable_id": "flood_hazard",
+    "label": "Flood hazard (return-period flood depth/extent)",
+    "aliases": [
+      "flood risk",
+      "flood depth"
+    ],
+    "canonical_unit": "m",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "jrc_global_flood_hazard"
+    ],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05",
+    "comment": "Layer choice deferred — FATHOM, JRC, WRI Aqueduct. Pilot-time decision."
+  },
+  {
+    "canonical_variable_id": "heat_stress_hazard",
+    "label": "Heat-stress hazard (Tmax-days / WBGT / heat-index frequency)",
+    "aliases": [
+      "heat stress",
+      "Tmax",
+      "extreme heat days"
+    ],
+    "canonical_unit": "days_per_year",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "chelsa_bioclim_v21_baseline",
+      "chelsa_bioclim_ssp245_2050"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical"
+  },
+  {
+    "canonical_variable_id": "biodiversity_priority",
+    "label": "Biodiversity priority (layer TBD)",
+    "aliases": [
+      "KBA",
+      "BII",
+      "biodiversity priority"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "biodiversity",
+    "candidate_dataset_ids": [
+      "bii_nhm_global"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05",
+    "comment": "BII (Newbold et al. 2016) chosen as canonical layer. KBA polygons recommended as supplementary binary flag (vector overlay outside T5)."
+  },
+  {
+    "canonical_variable_id": "water_stress",
+    "label": "Water stress (Aqueduct or ET-deficit composite)",
+    "aliases": [
+      "aqueduct",
+      "water scarcity",
+      "P-PET"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "climatic",
+    "candidate_dataset_ids": [
+      "wri_aqueduct_water_stress"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "rural_poverty",
+    "label": "Rural poverty headcount (subnational)",
+    "aliases": [
+      "poverty headcount",
+      "subnational poverty",
+      "PIP"
+    ],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "world_bank_poverty_pip"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high"
+  },
+  {
+    "canonical_variable_id": "production_gap",
+    "label": "Production gap vs attainable productivity",
+    "aliases": [
+      "yield gap",
+      "NPP gap",
+      "productivity gap"
+    ],
+    "canonical_unit": "pct",
+    "group_id": "agricultural_system",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05",
+    "comment": "Per-farming-system metric resolved via BIND: yield-gap (GAEZ/MapSPAM) for cropping; NPP gap for rangeland; mixed where applicable. Livestock side often requires_upload."
+  },
+  {
+    "canonical_variable_id": "agricultural_dependency",
+    "label": "Agricultural-sector dependency (livelihood)",
+    "aliases": [
+      "ag dependency",
+      "ag employment share"
+    ],
+    "canonical_unit": "pct",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "ilo_labour_statistics"
+    ],
+    "min_meaningful_resolution_m": 50000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "gender_inequity",
+    "label": "Gender inequity index (national flag)",
+    "aliases": [
+      "GII",
+      "gender gap"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "undp_gii_national"
+    ],
+    "min_meaningful_resolution_m": 100000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05",
+    "comment": "National-flag layer for now. Subnational disaggregation requires_upload."
+  },
+  {
+    "canonical_variable_id": "rural_population",
+    "label": "Rural population density",
+    "aliases": [
+      "population density",
+      "rural pop"
+    ],
+    "canonical_unit": "persons_per_km2",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "worldpop_population_density"
+    ],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium"
+  },
+  {
+    "canonical_variable_id": "farm_size",
+    "label": "Mean farm size (smallholder share or median ha)",
+    "aliases": [
+      "smallholder share",
+      "median farm size"
+    ],
+    "canonical_unit": "ha",
+    "group_id": "agricultural_system",
+    "candidate_dataset_ids": [
+      "lesiv_smallholder_farm_size"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05"
+  },
+  {
+    "canonical_variable_id": "agricultural_production_value",
+    "label": "Agricultural production value (gridded)",
+    "aliases": [
+      "ag GDP",
+      "ag production",
+      "MapSPAM value"
+    ],
+    "canonical_unit": "usd_per_ha_yr",
+    "group_id": "agricultural_system",
+    "candidate_dataset_ids": [
+      "mapspam_cocoa_2020",
+      "mapspam_v2"
+    ],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "t5_v030_ratification",
+    "raised_date": "2026-06-05",
+    "comment": "Generic MapSPAM-style value layer. Cocoa-specific binding already in T1; this canonical is the multi-crop generalisation."
+  },
+  {
+    "canonical_variable_id": "accessibility_travel_time",
+    "label": "Travel time to large city/market",
+    "aliases": [
+      "market access",
+      "market_access",
+      "travel time to large markets",
+      "accessibility",
+      "travel time"
+    ],
+    "canonical_unit": "minutes",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "nelson_accessibility_2015"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "Nelson/Weiss accessibility surface — minutes to large town. Maps to WOCAT QM indirect driver 'm' (market access / roads). | market_access (T5/T6/BIND) consolidated here 2026-06-24 #103 — same Nelson/Weiss travel-time surface; synonymous names kept as aliases."
+  },
+  {
+    "canonical_variable_id": "electrification_index",
+    "label": "Electrification / night-lights index",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "viirs_nighttime_lights"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "VIIRS night-lights or WB Energy grid-coverage. Maps to WOCAT QM indirect driver 'i' (infrastructure / energy)."
+  },
+  {
+    "canonical_variable_id": "tenure_security",
+    "label": "Land tenure security (formal + customary, incl. IPLC)",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "landmark_iplc_lands"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "LandMark + WWF/ICCA + Prindex. Carries FPIC/ESS7 flag where IPLC overlap detected. Maps to WOCAT QM indirect driver 't' (land tenure)."
+  },
+  {
+    "canonical_variable_id": "conflict_fragility_index",
+    "label": "Conflict / fragility index",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "acled_conflict_events"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "ACLED event density + WB FCV list. Maps to WOCAT QM indirect driver 'p' (political stability / conflict)."
+  },
+  {
+    "canonical_variable_id": "extension_governance",
+    "label": "Extension service + governance quality",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "wb_wgi_governance"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "WB WGI + country-team uploads. Maps to WOCAT QM indirect drivers 'e' (extension / education) and 'g' (governance / policy)."
+  },
+  {
+    "canonical_variable_id": "finance_credit_access",
+    "label": "Rural finance / credit / project density",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "wb_findex_access"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "WB project-funding density + FinScope. Maps to WOCAT QM indirect driver 'f' (finance / credit)."
+  },
+  {
+    "canonical_variable_id": "market_value_chain",
+    "label": "Market / value-chain depth",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "faostat_country_indicators"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "FAOSTAT + country-team uploads. Maps to WOCAT QM indirect driver 'm' (market access / value chain depth)."
+  },
+  {
+    "canonical_variable_id": "labour_availability",
+    "label": "Seasonal rural labour availability",
+    "aliases": [],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "ilo_labour_statistics"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "review_status": "canonical",
+    "raised_by": "v030_m2b_stream_b",
+    "raised_date": "2026-06-05",
+    "comment": "ILO + LSMS-ISA. Maps to WOCAT QM indirect driver 'l' (labor availability)."
+  },
+  {
+    "canonical_variable_id": "farming_system",
+    "label": "Farming system (EO-derived 6-class)",
+    "aliases": [
+      "FS class",
+      "farming system class"
+    ],
+    "canonical_unit": "class",
+    "group_id": "agricultural_system",
+    "candidate_dataset_ids": [
+      "glad_global_cropland_2019",
+      "esa_worldcereal_2021",
+      "glw4_livestock_2020",
+      "fao_gmia_v5",
+      "hansen_treecover2000",
+      "mapspam_cocoa_2020"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "comment": "Derived layer — recipe in methodology/farming_system_classifier.md. Run-time output, not a single dataset."
+  },
+  {
+    "canonical_variable_id": "iplc_lands",
+    "label": "IPLC lands presence",
+    "aliases": [
+      "indigenous and community lands",
+      "marginalisation",
+      "iplc_presence"
+    ],
+    "canonical_unit": "binary",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [
+      "landmark_iplc_lands"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "canonical",
+    "raised_by": "v030_t5_equity_inclusion",
+    "raised_date": "2026-06-07",
+    "comment": "LandMark + WWF/ICCA. Higher presence -> equity priority + FPIC/ESS7 flag for M6 hand-off."
+  },
+  {
+    "canonical_variable_id": "establishment_cost",
+    "label": "Establishment cost",
+    "aliases": [
+      "initial investment",
+      "capital cost",
+      "planting cost"
+    ],
+    "canonical_unit": "USD/ha",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "canonical",
+    "raised_by": "issue_24_wocat",
+    "raised_date": "2026-06-09",
+    "comment": "Initial establishment / capital cost per hectare. Extracted from literature/WOCAT database."
+  },
+  {
+    "canonical_variable_id": "recurrent_cost",
+    "label": "Recurrent / maintenance cost",
+    "aliases": [
+      "maintenance cost",
+      "operating cost",
+      "annual cost"
+    ],
+    "canonical_unit": "USD/ha/year",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "canonical",
+    "raised_by": "issue_24_wocat",
+    "raised_date": "2026-06-09",
+    "comment": "Annual maintenance / recurrent operational cost per hectare. Extracted from literature/WOCAT database."
+  },
+  {
+    "canonical_variable_id": "fire_hazard",
+    "label": "Wildfire / fire hazard (frequency / burn probability)",
+    "aliases": [
+      "fire",
+      "wildfire",
+      "burn probability"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "modis_burned_areas"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "wind_cyclone_hazard",
+    "label": "Wind / cyclone hazard (max wind speed / gust speed)",
+    "aliases": [
+      "wind",
+      "storm",
+      "cyclone"
+    ],
+    "canonical_unit": "m/s",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "global_wind_atlas"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "waterlogging_hazard",
+    "label": "Waterlogging hazard (inundation / drainage constraints)",
+    "aliases": [
+      "waterlogging",
+      "anaerobic soil"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [
+      "hwsd_v2"
+    ],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "soil_water_retention",
+    "label": "Soil water retention capacity",
+    "aliases": [
+      "water retention",
+      "infiltration rate"
+    ],
+    "canonical_unit": "mm",
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "runoff_reduction",
+    "label": "Surface runoff reduction rate",
+    "aliases": [
+      "runoff reduction"
+    ],
+    "canonical_unit": "percent",
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "wildfire_mitigation",
+    "label": "Wildfire hazard mitigation potential",
+    "aliases": [
+      "wildfire mitigation",
+      "fuel load reduction"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "hazard",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "silvopastoral_grazing",
+    "label": "Silvopastoral grazing management",
+    "aliases": [
+      "silvopastoral grazing",
+      "woodland grazing"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "fuel_load_mitigation",
+    "label": "Fuel load mitigation potential",
+    "aliases": [
+      "fuel load mitigation"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "hazard",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "microclimate_buffering",
+    "label": "Microclimate temperature buffering",
+    "aliases": [
+      "microclimate",
+      "understorey cooling"
+    ],
+    "canonical_unit": "degC",
+    "group_id": "climatic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "water_regulation",
+    "label": "Water regulation capacity",
+    "aliases": [
+      "water regulation",
+      "hydrological buffering"
+    ],
+    "canonical_unit": "unitless",
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "soil_nitrogen",
+    "label": "Soil nitrogen availability",
+    "aliases": [
+      "soil nitrogen",
+      "soil N"
+    ],
+    "canonical_unit": "g/kg",
+    "group_id": "edaphic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "crop_yield",
+    "label": "Crop productivity / grain yield",
+    "aliases": [
+      "yield",
+      "crop yield"
+    ],
+    "canonical_unit": "t/ha",
+    "group_id": "agricultural_system",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 250,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "canonical",
+    "raised_by": "issue_21_t3_hazards",
+    "raised_date": "2026-06-15"
+  },
+  {
+    "canonical_variable_id": "carbon_sequestration",
+    "label": "Carbon sequestration / removal rate (biomass + soil)",
+    "aliases": [
+      "carbon sequestration",
+      "sequestration rate",
+      "tCO2",
+      "carbon removal"
+    ],
+    "canonical_unit": "tCO2/ha/yr",
+    "unit_conversions": {},
+    "group_id": "carbon",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "project_cost",
+    "label": "Project / investment cost",
+    "aliases": [
+      "cost",
+      "investment cost",
+      "budget"
+    ],
+    "canonical_unit": "USD",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "economic_return",
+    "label": "Economic return (EIRR / NPV / benefit-cost)",
+    "aliases": [
+      "EIRR",
+      "NPV",
+      "benefit-cost ratio",
+      "economic rate of return"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "beneficiaries",
+    "label": "Beneficiaries reached / area under practice",
+    "aliases": [
+      "beneficiaries",
+      "farmers reached",
+      "households",
+      "hectares"
+    ],
+    "canonical_unit": "count",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "household_income",
+    "label": "Household income / revenue effect",
+    "aliases": [
+      "income",
+      "revenue",
+      "profit"
+    ],
+    "canonical_unit": "USD",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "food_security",
+    "label": "Food security / dietary diversity outcome",
+    "aliases": [
+      "food security",
+      "dietary diversity",
+      "nutrition"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "high",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "adoption_rate",
+    "label": "Adoption / uptake rate",
+    "aliases": [
+      "adoption",
+      "uptake",
+      "dis-adoption"
+    ],
+    "canonical_unit": "percent",
+    "unit_conversions": {},
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 10000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "ecosystem_service",
+    "label": "Ecosystem service provision (non-carbon)",
+    "aliases": [
+      "ecosystem service",
+      "provisioning",
+      "regulating"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "biodiversity",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "biodiversity_outcome",
+    "label": "Biodiversity outcome (richness / ESI)",
+    "aliases": [
+      "biodiversity",
+      "species richness",
+      "ESI"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "biodiversity",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "medium",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "erosion_hazard",
+    "label": "Soil erosion / land degradation hazard",
+    "aliases": [
+      "erosion",
+      "soil loss",
+      "land degradation"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "climate_shock",
+    "label": "Climate shock / variability exposure",
+    "aliases": [
+      "climate shock",
+      "climate variability",
+      "extreme weather"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "climate_hazard",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 5000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "windbreak_protection",
+    "label": "Windbreak / shelter protection effect",
+    "aliases": [
+      "windbreak",
+      "shelterbelt",
+      "wind protection"
+    ],
+    "canonical_unit": "unitless",
+    "unit_conversions": {},
+    "group_id": "hazard",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 1000,
+    "resolution_sensitivity": "low",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "pending",
+    "raised_by": "reextract_2026-06-17",
+    "raised_date": "2026-06-17",
+    "comment": "auto-registered from T3/T6 re-extraction; needs ontology review"
+  },
+  {
+    "canonical_variable_id": "rootstock_presence",
+    "label": "Living tree stump / rootstock presence",
+    "aliases": [
+      "rootstock",
+      "living stumps",
+      "regeneration potential",
+      "root suckers",
+      "seed source"
+    ],
+    "canonical_unit": "categorical",
+    "group_id": "land_cover_vegetation",
+    "candidate_dataset_ids": [
+      "requires_upload",
+      "field_survey"
+    ],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": false,
+    "context_sensitivity": "low",
+    "review_status": "pending_review",
+    "raised_by": "claude_grey_sweep",
+    "raised_date": "2026-06-20",
+    "comment": "System-constraint precondition for FMNR (existing rootstock/regeneration capacity) — CRS FMNR Niger."
+  },
+  {
+    "canonical_variable_id": "distance_to_settlement",
+    "label": "Distance to nearest settlement",
+    "aliases": [
+      "distance to market",
+      "distance from settlement",
+      "distance to town",
+      "distance to village",
+      "settlement proximity",
+      "market proximity"
+    ],
+    "canonical_unit": "km",
+    "unit_conversions": {
+      "m->km": "/1000"
+    },
+    "group_id": "socio_economic",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "medium",
+    "review_status": "pending_review",
+    "raised_by": "issue_103",
+    "raised_date": "2026-06-24",
+    "comment": "Euclidean distance to built-up/settlement. distance_to_market is SYNONYMOUS (rural settlement≈market) — folded here as an alias. Distinct from accessibility_travel_time (friction/travel-time, not euclidean). Dataset binding pending (Benson). #103."
+  },
+  {
+    "canonical_variable_id": "distance_to_waterbody",
+    "label": "Distance to nearest waterbody",
+    "aliases": [
+      "distance to water",
+      "distance from waterbody",
+      "river proximity",
+      "stream proximity"
+    ],
+    "canonical_unit": "km",
+    "unit_conversions": {
+      "m->km": "/1000"
+    },
+    "group_id": "hydrological",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "low",
+    "review_status": "pending_review",
+    "raised_by": "issue_103",
+    "raised_date": "2026-06-24",
+    "comment": "Euclidean distance to surface water. Dataset binding pending. #103."
+  },
+  {
+    "canonical_variable_id": "distance_to_cropland",
+    "label": "Distance to nearest cropland",
+    "aliases": [
+      "distance to cropland",
+      "distance from agriculture",
+      "cropland proximity"
+    ],
+    "canonical_unit": "km",
+    "unit_conversions": {
+      "m->km": "/1000"
+    },
+    "group_id": "land_use",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "medium",
+    "review_status": "pending_review",
+    "raised_by": "issue_103",
+    "raised_date": "2026-06-24",
+    "comment": "Euclidean distance to cropland. Dataset binding pending. #103."
+  },
+  {
+    "canonical_variable_id": "distance_to_forest",
+    "label": "Distance to nearest forest",
+    "aliases": [
+      "distance to forest",
+      "distance from forest",
+      "forest edge proximity"
+    ],
+    "canonical_unit": "km",
+    "unit_conversions": {
+      "m->km": "/1000"
+    },
+    "group_id": "land_cover_vegetation",
+    "candidate_dataset_ids": [],
+    "min_meaningful_resolution_m": 100,
+    "resolution_sensitivity": "medium",
+    "derive_then_aggregate": true,
+    "context_sensitivity": "medium",
+    "review_status": "pending_review",
+    "raised_by": "issue_103",
+    "raised_date": "2026-06-24",
+    "comment": "Euclidean distance to forest/tree cover. Dataset binding pending. #103."
+  }
+]
