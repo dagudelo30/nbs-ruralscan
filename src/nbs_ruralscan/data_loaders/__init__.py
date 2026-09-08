@@ -113,7 +113,18 @@ def _load_local_raster(
             f"T1 row for {dataset_id!r} has no access_params.local_filename set -- add "
             '{"local_filename": "<exact filename>"} before this loader can find it.'
         )
-    path = Path("data") / "raw" / dataset_id / filename
+    # "data/raw/..." relative to the CURRENT WORKING DIRECTORY breaks in Jupyter -- the
+    # kernel's cwd depends on where/how it was launched (often the notebook's own folder, not
+    # the repo root), confirmed against a real run where a correctly-placed file still raised
+    # "not found". Try cwd-relative first (keeps existing tests, which chdir into a tmp repo
+    # layout, working unchanged), then fall back to a path anchored to this module's own file
+    # location -- invariant to the caller's cwd, since __init__.py always lives at
+    # <repo_root>/src/nbs_ruralscan/data_loaders/__init__.py regardless of where Python runs.
+    candidates = [
+        Path("data") / "raw" / dataset_id / filename,
+        Path(__file__).resolve().parents[3] / "data" / "raw" / dataset_id / filename,
+    ]
+    path = next((p for p in candidates if p.exists()), candidates[0])
     if not path.exists():
         raise FileNotFoundError(
             f"expected downloaded file at {path} for dataset_id={dataset_id!r} -- not found. "
