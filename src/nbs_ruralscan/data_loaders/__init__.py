@@ -55,7 +55,9 @@ def _synthetic_raster(
     rng = np.random.default_rng(seed)
     low, high = value_range
     data = rng.uniform(low, high, size=(len(lats), len(lons)))
-    da = xr.DataArray(data, coords={"y": lats, "x": lons}, dims=("y", "x"), name=variable)
+    da = xr.DataArray(
+        data, coords={"y": lats, "x": lons}, dims=("y", "x"), name=variable
+    )
     da.attrs["is_synthetic"] = True
     da.attrs["variable"] = variable
     da.rio.write_crs("EPSG:4326", inplace=True)
@@ -117,11 +119,11 @@ def _load_gee_asset(
     try:
         image = ee.Image(gee_asset_id)
         image.getInfo()  # forces evaluation; raises if this asset_id is actually a collection
-    except Exception:
+    except Exception:  # noqa: BLE001 -- intentional type probe (Image vs Collection vs Vector), any failure means "try the next type"
         try:
             image = ee.ImageCollection(gee_asset_id).mean()
             image.getInfo()  # forces evaluation; raises if this is actually a FeatureCollection
-        except Exception:
+        except Exception:  # noqa: BLE001 -- last type probe in the chain, falls through to FeatureCollection
             # Vector asset (e.g. WDPA polygons: WCMC/WDPA/current/polygons) -- confirmed
             # against a real run: neither ee.Image nor ee.ImageCollection accepts it, GEE
             # calls it an "EECollection" (its generic term for FeatureCollection). Rasterise
@@ -150,7 +152,7 @@ def _load_gee_asset(
         # range was cut short without erroring).
         shape_2d=(width, height),
     )
-    var_name = list(ds.data_vars)[0]
+    var_name = next(iter(ds.data_vars))
     da = ds[var_name]
     if "time" in da.dims:
         da = da.isel(time=0, drop=True)
@@ -191,13 +193,14 @@ def _load_reference_table(
                 lons = np.arange(minx, maxx, resolution_deg)
                 lats = np.arange(miny, maxy, resolution_deg)
                 data = np.full((len(lats), len(lons)), value)
-                da = xr.DataArray(data, coords={"y": lats, "x": lons}, dims=("y", "x"), name=variable)
+                da = xr.DataArray(
+                    data, coords={"y": lats, "x": lons}, dims=("y", "x"), name=variable
+                )
                 da.attrs["is_synthetic"] = False
                 da.attrs["variable"] = variable
                 da.rio.write_crs("EPSG:4326", inplace=True)
                 return da, value
     return None, None
-
 
 
 def load_variable(
@@ -238,7 +241,9 @@ def load_variable(
             country_iso3,
             source_note,
         )
-        da = _synthetic_raster(variable, bbox, resolution_deg, value_range=synthetic_value_range)
+        da = _synthetic_raster(
+            variable, bbox, resolution_deg, value_range=synthetic_value_range
+        )
         da.attrs["recommended_source"] = source_note
         return da
 
@@ -251,7 +256,9 @@ def load_variable(
                 variable,
                 source_note,
             )
-            da = _synthetic_raster(variable, bbox, resolution_deg, value_range=synthetic_value_range)
+            da = _synthetic_raster(
+                variable, bbox, resolution_deg, value_range=synthetic_value_range
+            )
             da.attrs["recommended_source"] = source_note
             return da
         try:
@@ -264,7 +271,7 @@ def load_variable(
                 variable,
                 source_note,
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- deliberately broad: any GEE/network/auth failure should fall back to synthetic, not crash the pipeline
             logger.warning(
                 "%r: GEE pull failed (%s: %s) -- falling back to synthetic. Common causes: "
                 "`ee.Initialize()` not called yet, no internet path to Google from this "
@@ -274,7 +281,9 @@ def load_variable(
                 exc,
                 source_note,
             )
-        da = _synthetic_raster(variable, bbox, resolution_deg, value_range=synthetic_value_range)
+        da = _synthetic_raster(
+            variable, bbox, resolution_deg, value_range=synthetic_value_range
+        )
         da.attrs["recommended_source"] = source_note
         return da
 
@@ -289,6 +298,8 @@ def load_variable(
         access_type,
         source_note,
     )
-    da = _synthetic_raster(variable, bbox, resolution_deg, value_range=synthetic_value_range)
+    da = _synthetic_raster(
+        variable, bbox, resolution_deg, value_range=synthetic_value_range
+    )
     da.attrs["recommended_source"] = source_note
     return da

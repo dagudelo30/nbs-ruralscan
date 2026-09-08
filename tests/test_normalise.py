@@ -3,7 +3,13 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from nbs_ruralscan.runtime.normalise import linear_decay, log_transform, min_max, normalise, percentile_clip
+from nbs_ruralscan.runtime.normalise import (
+    linear_decay,
+    log_transform,
+    min_max,
+    normalise,
+    percentile_clip,
+)
 
 
 def test_min_max_basic():

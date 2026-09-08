@@ -133,7 +133,10 @@
     "preprocessing_notes": "Used by Ahmad et al. (2020) as primary soil input for South Asia agroforestry suitability. Join soil mapping unit attributes on raster values. Extract topsoil properties for suitability scoring.",
     "limitations": "Coarser conceptual resolution than SoilGrids despite same pixel size — many large mapping units contain internally variable soils. Outdated in rapidly changing agricultural areas. Not for: Detailed site characterisation; soil carbon accounting",
     "description": "Harmonized World Soil Database v2 — global ~1 km soil units with property attributes.",
-    "grain_type": "grid"
+    "grain_type": "grid",
+    "access_params": {
+      "local_filename": "HWSD2.bil"
+    }
   },
   {
     "dataset_id": "srtm_dem_90m",
@@ -200,7 +203,10 @@
     "preprocessing_notes": "AI < 0.5 = dryland; used to mask unsuitable extreme arid zones for agroforestry. Ahmad et al. (2020) use aridity index as key suitability layer for South Asia. Nath et al. (2021) use Global Aridity Index for Himalayan region.",
     "limitations": "Derived from WorldClim 1970–2000 climatology — does not reflect recent drying trends. PET estimated with Penman-Monteith assuming reference crop. Not for: Real-time drought monitoring; current water stress assessment",
     "description": "Global-Aridity Index v3 — long-term P/PET ratio at ~1 km (CGIAR-CSI).",
-    "grain_type": "grid"
+    "grain_type": "grid",
+    "access_params": {
+      "local_filename": "ai_v3_yr.tif"
+    }
   },
   {
     "dataset_id": "protected_areas_wdpa",
@@ -940,5 +946,53 @@
     "limitations": "Prediction uncertainty is high in data-sparse regions (much of sub-Saharan Africa). Point observations biased toward accessible areas. Temporal static — does not capture land-use change effects on soil. Not for: Precision soil management at plot level; nutrient management plans without ground-truthing",
     "description": "Global digital soil mapping (250 m) of physical and chemical soil properties at six depths.",
     "grain_type": "grid"
+  },
+  {
+    "dataset_id": "worldclim_v2_bioclim_temp",
+    "dataset_name": "WorldClim v2.1 Bioclimatic Variables -- bio1 (annual mean temperature)",
+    "analytical_module": "climate_hazard",
+    "hazard_type": "multi",
+    "scenario_type": "baseline",
+    "time_period": "1970-2000",
+    "spatial_resolution_m": 1000,
+    "geographic_coverage": [
+      "global"
+    ],
+    "data_format": "geotiff",
+    "access_type": "direct_download",
+    "download_url": "https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_30s_bio.zip",
+    "license": "CC-BY-4.0",
+    "citation": "Fick, S.E. & Hijmans, R.J. (2017). WorldClim 2. International Journal of Climatology, 37(12), 4302-4315.",
+    "doi": "10.1002/joc.5086",
+    "version": "v2.1",
+    "description": "Global gridded bioclimatic variables (BIO1-BIO19), 1970-2000.",
+    "grain_type": "grid",
+    "access_params": {
+      "local_filename": "wc2.1_30s_bio_1.tif"
+    }
+  },
+  {
+    "dataset_id": "worldclim_v2_bioclim_precip",
+    "dataset_name": "WorldClim v2.1 Bioclimatic Variables -- bio12 (annual precipitation)",
+    "analytical_module": "climate_hazard",
+    "hazard_type": "multi",
+    "scenario_type": "baseline",
+    "time_period": "1970-2000",
+    "spatial_resolution_m": 1000,
+    "geographic_coverage": [
+      "global"
+    ],
+    "data_format": "geotiff",
+    "access_type": "direct_download",
+    "download_url": "https://geodata.ucdavis.edu/climate/worldclim/2_1/base/wc2.1_30s_bio.zip",
+    "license": "CC-BY-4.0",
+    "citation": "Fick, S.E. & Hijmans, R.J. (2017). WorldClim 2. International Journal of Climatology, 37(12), 4302-4315.",
+    "doi": "10.1002/joc.5086",
+    "version": "v2.1",
+    "description": "Global gridded bioclimatic variables (BIO1-BIO19), 1970-2000.",
+    "grain_type": "grid",
+    "access_params": {
+      "local_filename": "wc2.1_30s_bio_12.tif"
+    }
   }
 ]

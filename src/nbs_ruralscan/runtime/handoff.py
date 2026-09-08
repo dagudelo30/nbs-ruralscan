@@ -17,14 +17,21 @@ STAGE_PATHWAY = [
 ]
 
 FEASIBILITY_METHODS_TABLE_6 = {
-    "nature_based": ["InVEST", "RUSLE (soil erosion)", "IPCC Tier 1-3 carbon accounting"],
-    "integrated": ["Cost-benefit analysis (CBA)", "Multi-criteria decision analysis (MCDA)"],
+    "nature_based": [
+        "InVEST",
+        "RUSLE (soil erosion)",
+        "IPCC Tier 1-3 carbon accounting",
+    ],
+    "integrated": [
+        "Cost-benefit analysis (CBA)",
+        "Multi-criteria decision analysis (MCDA)",
+    ],
 }
 
 
 def handoff_card(
     nbs_id: str,
-    ranked_units: "object",
+    ranked_units: object,
     economic_profile: dict,
     iplc_overlap: bool = False,
     context_sensitive_vars: list[str] | None = None,

@@ -37,3 +37,4 @@ pipeline/inbox/
 
 # verify-flag review worklist (work artifact; review.py is the tool)
 pipeline/review/
+data/raw/

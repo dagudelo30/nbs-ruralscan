@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pandas as pd
-
 from nbs_ruralscan.runtime.climate_risk import relevant_hazards, run_m2
 from nbs_ruralscan.runtime.schema_loader import load_recipe
 

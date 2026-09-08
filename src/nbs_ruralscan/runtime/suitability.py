@@ -24,9 +24,9 @@ recipe explicitly separates "structural constraint" (exclusion) from "quality gr
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Callable
 
 import numpy as np
 import pandas as pd
@@ -99,7 +99,10 @@ def _plausible_range(relationship_params) -> tuple[float, float]:
     if isinstance(relationship_params, str):
         relationship_params = json.loads(relationship_params)
     if "class_map" in relationship_params:
-        return (0.0, 1.0)  # categorical -- caller's fuzzy fn does the string lookup itself
+        return (
+            0.0,
+            1.0,
+        )  # categorical -- caller's fuzzy fn does the string lookup itself
     lo = relationship_params.get("abs_min")
     hi = relationship_params.get("abs_max")
     if lo is None:
@@ -132,7 +135,9 @@ def _target_grid(bbox: tuple[float, float, float, float], resolution_m: int):
     return transform, (height, width)
 
 
-def _align_to_grid(da, transform, shape, variable: str, categorical: bool, dst_crs: str = "EPSG:4326"):
+def _align_to_grid(
+    da, transform, shape, variable: str, categorical: bool, dst_crs: str = "EPSG:4326"
+):
     """Reproject/resample one variable's raster onto the shared target grid. Handles xee's
     dimension naming (`lon`/`lat` rather than rioxarray's default `x`/`y`) and missing CRS
     metadata defensively -- neither is guaranteed identical between a GEE pull and the
@@ -180,7 +185,9 @@ def _align_to_grid(da, transform, shape, variable: str, categorical: bool, dst_c
             fill_value,
         )
         da = da.fillna(fill_value)
-    da.attrs["fill_mask"] = fill_mask  # True = relleno artificial, no dato real -- para graficar
+    da.attrs["fill_mask"] = (
+        fill_mask  # True = relleno artificial, no dato real -- para graficar
+    )
     da.attrs["is_synthetic"] = is_synthetic
     da.attrs["variable"] = variable
     return da
@@ -194,7 +201,7 @@ def load_and_align_one_variable(
     resolution_m: int,
     dataset_id_override: str | None = None,
     country_iso3: str | None = None,
-) -> tuple["object | None", ResolutionAuditRow | None]:
+) -> tuple[object | None, ResolutionAuditRow | None]:
     """Pull + align ONE variable, standalone -- the exact same logic `assemble_variables` runs
     per T4 row, extracted so it can be called on its own (one variable, one plot, one sanity
     check) before ever entering the full M1 stack. This is the single source of truth: the
@@ -224,7 +231,7 @@ def load_and_align_one_variable(
     try:
         categorical = row["relationship_type"] in ("ranked_classes", "threshold")
         da = _align_to_grid(da, transform, shape, variable=var, categorical=categorical)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- alignment/reprojection can fail in many GDAL/rioxarray-specific ways; any failure should skip this one variable, not crash the whole M1 run
         logger.warning(
             "%r: could not align to the shared analysis grid (%s: %s) -- skipping this "
             "variable for this run rather than crashing the whole M1 stack.",
@@ -262,7 +269,7 @@ def assemble_variables(
     resolution_m: int,
     dataset_ids: dict[str, str] | None = None,
     country_iso3: str | None = None,
-) -> tuple[dict[str, "object"], list[ResolutionAuditRow]]:
+) -> tuple[dict[str, object], list[ResolutionAuditRow]]:
     """6.1 -- pull every T4 variable's raster for the AOI, one at a time, via
     `load_and_align_one_variable` (the single source of truth also used by the per-variable
     audit notebook). `dataset_ids` optionally overrides T4's own `dataset_id` per variable
@@ -276,7 +283,13 @@ def assemble_variables(
         var = row["variable"]
         override = (dataset_ids or {}).get(var)
         da, audit_row = load_and_align_one_variable(
-            var, row, t1, bbox, resolution_m, dataset_id_override=override, country_iso3=country_iso3
+            var,
+            row,
+            t1,
+            bbox,
+            resolution_m,
+            dataset_id_override=override,
+            country_iso3=country_iso3,
         )
         if da is None:
             continue
@@ -286,7 +299,7 @@ def assemble_variables(
 
 
 def standardise_stack(
-    layers: dict[str, "object"], t4: pd.DataFrame
+    layers: dict[str, object], t4: pd.DataFrame
 ) -> dict[str, np.ndarray]:
     """6.2 -- fuzzy-standardise every layer per its T4 relationship_type/params."""
     out = {}
@@ -351,7 +364,10 @@ def reduce_correlated(
 
 
 def derive_weights(
-    kept_variables: list[str], standardised: dict[str, np.ndarray], t4: pd.DataFrame, alpha: float = 0.4
+    kept_variables: list[str],
+    standardised: dict[str, np.ndarray],
+    t4: pd.DataFrame,
+    alpha: float = 0.4,
 ) -> tuple[np.ndarray, pd.DataFrame]:
     """6.4 -- CRITIC (objective, computed from the actual standardised rasters) reconciled with
     T4.weight_default (subjective/literature-derived) via alpha=0.4 (framework default: 60%
@@ -383,7 +399,11 @@ def derive_weights(
 
     objective = critic_weights(n_obs)
 
-    subjective_raw = t4.set_index("variable").loc[kept_variables, "weight_default"].to_numpy(dtype=float)
+    subjective_raw = (
+        t4.set_index("variable")
+        .loc[kept_variables, "weight_default"]
+        .to_numpy(dtype=float)
+    )
     subjective_raw = subjective_raw / subjective_raw.sum()
     ahp_matrix = ahp_matrix_from_weights(subjective_raw)
     subjective = ahp_weights(ahp_matrix)
