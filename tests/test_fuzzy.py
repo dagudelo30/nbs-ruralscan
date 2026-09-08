@@ -30,7 +30,9 @@ def test_trapezoidal_shape():
 
 def test_trapezoidal_malformed_clamps_not_crashes():
     # real recipe bug: abs_max < opt_high (tree_canopy_cover / mean_annual_temperature)
-    out = trapezoidal(np.array([10, 22, 30]), abs_min=5, opt_low=20, opt_high=25.5, abs_max=21.3)
+    out = trapezoidal(
+        np.array([10, 22, 30]), abs_min=5, opt_low=20, opt_high=25.5, abs_max=21.3
+    )
     assert not np.isnan(out).any()
     assert (out >= 0).all() and (out <= 1).all()
 
@@ -65,7 +67,11 @@ def test_all_agroforestry_t4_rows_standardise_without_nan():
     """Every relationship_type + relationship_params combination actually present in the
     agroforestry recipe must produce finite output in [0, 1] — this is the real content the
     pipeline will standardise, not a synthetic edge case."""
-    t4 = json.loads((SCHEMA_ROOT / "recipes" / "agroforestry" / "T4_suitability_mappings.json").read_text())
+    t4 = json.loads(
+        (
+            SCHEMA_ROOT / "recipes" / "agroforestry" / "T4_suitability_mappings.json"
+        ).read_text()
+    )
     test_x = np.linspace(-5, 50, 20)
     for row in t4:
         out = standardise(test_x, row["relationship_type"], row["relationship_params"])

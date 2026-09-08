@@ -36,7 +36,9 @@ _RECIPE_TABLES: dict[str, str] = {
 def load_root_table(schema_root: str | Path, table: str) -> pd.DataFrame:
     """Load one cross-NbS table (T1 / T2 / T5 / T7) from the schema root."""
     if table not in _ROOT_TABLES:
-        raise KeyError(f"{table!r} is not a root table; expected one of {list(_ROOT_TABLES)}")
+        raise KeyError(
+            f"{table!r} is not a root table; expected one of {list(_ROOT_TABLES)}"
+        )
     path = Path(schema_root) / f"{_ROOT_TABLES[table]}.csv"
     return pd.read_csv(path)
 
@@ -48,7 +50,9 @@ def load_recipe_table(schema_root: str | Path, nbs_id: str, table: str) -> pd.Da
     (e.g. forest_restoration only has T0 today) rather than a bare pandas error.
     """
     if table not in _RECIPE_TABLES:
-        raise KeyError(f"{table!r} is not a recipe table; expected one of {list(_RECIPE_TABLES)}")
+        raise KeyError(
+            f"{table!r} is not a recipe table; expected one of {list(_RECIPE_TABLES)}"
+        )
     path = Path(schema_root) / "recipes" / nbs_id / f"{_RECIPE_TABLES[table]}.csv"
     if not path.exists():
         raise FileNotFoundError(
@@ -100,7 +104,9 @@ def aoi_contexts(t7: pd.DataFrame, admin_country: str) -> set[str]:
     lookup - this function only resolves the *config* side (M0 spec Sec 6.1/6.3), same split as
     binding.resolve_binding's `aoi_contexts` parameter, which this feeds.
     """
-    match = t7[(t7["context_type"] == "admin_country") & (t7["context_id"] == admin_country)]
+    match = t7[
+        (t7["context_type"] == "admin_country") & (t7["context_id"] == admin_country)
+    ]
     if match.empty:
         raise KeyError(
             f"{admin_country!r} not found in T7 as admin_country - "

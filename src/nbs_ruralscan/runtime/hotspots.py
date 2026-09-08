@@ -15,7 +15,8 @@ from nbs_ruralscan.runtime.mcda import quartile_classify, weighted_overlay
 
 
 def map_conceptual_weights(
-    settings: dict[str, str], scale: tuple[float, float, float, float] = (0.0, 1.0, 2.0, 3.0)
+    settings: dict[str, str],
+    scale: tuple[float, float, float, float] = (0.0, 1.0, 2.0, 3.0),
 ) -> dict[str, float]:
     """Sec 6.3 -- map TTL settings {priority_id: '-'|'L'|'M'|'H'} to normalised numeric
     weights. '-' priorities are dropped before normalising (a TTL choosing "not a priority"
@@ -36,11 +37,19 @@ def build_priority_stack(
     missing = [v for v in weights if v not in standardised_priorities]
     if missing:
         raise KeyError(f"weighted priorities missing from M3 output: {missing}")
-    stack = np.stack([np.nan_to_num(standardised_priorities[v], nan=0.0) for v in ordered_vars], axis=-1)
+    stack = np.stack(
+        [np.nan_to_num(standardised_priorities[v], nan=0.0) for v in ordered_vars],
+        axis=-1,
+    )
     return stack, ordered_vars
 
 
-def hotspot_overlay(stack: np.ndarray, weights: dict[str, float], ordered_vars: list[str], opp_mask: np.ndarray) -> np.ndarray:
+def hotspot_overlay(
+    stack: np.ndarray,
+    weights: dict[str, float],
+    ordered_vars: list[str],
+    opp_mask: np.ndarray,
+) -> np.ndarray:
     """Sec 6.5 -- thin wrapper over `mcda.weighted_overlay`, re-applying the opportunity-space
     mask (NaN outside) so the hotspot score is only ever defined where M1 says the NbS could
     work at all."""
@@ -50,7 +59,10 @@ def hotspot_overlay(stack: np.ndarray, weights: dict[str, float], ordered_vars: 
 
 
 def apply_project_risk_scope(
-    hotspot: np.ndarray, project_risk: np.ndarray | None, threshold: float = 0.75, mode: str = "flag"
+    hotspot: np.ndarray,
+    project_risk: np.ndarray | None,
+    threshold: float = 0.75,
+    mode: str = "flag",
 ) -> tuple[np.ndarray, np.ndarray | None]:
     """Sec 6.6 -- M2b filter/scope, never summed into the score (spec's explicit rule). Returns
     (hotspot, high_risk_flag_mask). `project_risk` is None when M2b hasn't been run (it's
@@ -63,11 +75,17 @@ def apply_project_risk_scope(
     return hotspot, high_risk  # "flag" mode: UI highlights, score untouched
 
 
-def bivariate(suitability: np.ndarray, hotspot: np.ndarray, bins: int = 5) -> np.ndarray:
+def bivariate(
+    suitability: np.ndarray, hotspot: np.ndarray, bins: int = 5
+) -> np.ndarray:
     """Sec 6.7 -- 5x5 suitability x priority classification, combined into a single 1-25 code
     (row-major: `(suit_class - 1) * bins + priority_class`)."""
-    suit_classes, _ = quartile_classify(suitability) if bins == 4 else _n_class(suitability, bins)
-    hot_classes, _ = quartile_classify(hotspot) if bins == 4 else _n_class(hotspot, bins)
+    suit_classes, _ = (
+        quartile_classify(suitability) if bins == 4 else _n_class(suitability, bins)
+    )
+    hot_classes, _ = (
+        quartile_classify(hotspot) if bins == 4 else _n_class(hotspot, bins)
+    )
     return (suit_classes.astype(int) - 1) * bins + hot_classes.astype(int)
 
 

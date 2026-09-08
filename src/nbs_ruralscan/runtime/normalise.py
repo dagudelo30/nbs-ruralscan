@@ -48,7 +48,9 @@ def log_transform(x: np.ndarray) -> np.ndarray:
     return min_max(np.log1p(np.clip(x, a_min=0, a_max=None)))
 
 
-def linear_decay(x: np.ndarray, suitable_max: float, unsuitable_min: float) -> np.ndarray:
+def linear_decay(
+    x: np.ndarray, suitable_max: float, unsuitable_min: float
+) -> np.ndarray:
     if unsuitable_min == suitable_max:
         return np.where(x <= suitable_max, 1.0, 0.0)
     frac = (x - suitable_max) / (unsuitable_min - suitable_max)
@@ -56,19 +58,27 @@ def linear_decay(x: np.ndarray, suitable_max: float, unsuitable_min: float) -> n
 
 
 _DISPATCH = {
-    "percentile_clip": lambda x, p: percentile_clip(x, p.get("p_low", 2), p.get("p_high", 98)),
+    "percentile_clip": lambda x, p: percentile_clip(
+        x, p.get("p_low", 2), p.get("p_high", 98)
+    ),
     "min_max": lambda x, p: min_max(x),
     "log_transform": lambda x, p: log_transform(x),
-    "linear_decay": lambda x, p: linear_decay(x, p["suitable_max"], p["unsuitable_min"]),
+    "linear_decay": lambda x, p: linear_decay(
+        x, p["suitable_max"], p["unsuitable_min"]
+    ),
 }
 
 
-def normalise(x: np.ndarray, method: str, params: dict, directionality: str = "positive_risk") -> np.ndarray:
+def normalise(
+    x: np.ndarray, method: str, params: dict, directionality: str = "positive_risk"
+) -> np.ndarray:
     """Dispatch + apply directionality. Raises KeyError for an unimplemented method (loud, not
     a silent pass-through -- an un-normalised 0-100+ raster mixed additively with 0-1 layers
     would silently dominate any composite)."""
     if method not in _DISPATCH:
-        raise KeyError(f"no normalisation implemented for method={method!r}; known: {sorted(_DISPATCH)}")
+        raise KeyError(
+            f"no normalisation implemented for method={method!r}; known: {sorted(_DISPATCH)}"
+        )
     out = _DISPATCH[method](x, params)
     if directionality == "negative_risk":
         out = 1.0 - out

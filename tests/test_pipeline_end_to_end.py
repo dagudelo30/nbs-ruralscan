@@ -38,5 +38,7 @@ def test_full_chain_agroforestry_haiti():
     m5 = run_m5(recipe.t6, recipe.t5, recipe.t2, m3["problem_distribution"])
     assert len(m5["scorecard"]) == len(recipe.t6)
 
-    card = handoff_card("agroforestry", m4["ranked_units"], m5["economic_profile_scoping_grade"])
+    card = handoff_card(
+        "agroforestry", m4["ranked_units"], m5["economic_profile_scoping_grade"]
+    )
     assert card["current_stage"] == "Scoping (this tool)"

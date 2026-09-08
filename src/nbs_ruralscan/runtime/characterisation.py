@@ -31,7 +31,9 @@ def assemble_priorities(
     recipe: soil_erosion_risk, production_gap) are skipped with a warning rather than guessed.
     """
     priorities = t5[(t5["mcda_role"] == "priority") & t5["dataset_id"].notna()]
-    skipped = t5[(t5["mcda_role"] == "priority") & t5["dataset_id"].isna()]["variable"].tolist()
+    skipped = t5[(t5["mcda_role"] == "priority") & t5["dataset_id"].isna()][
+        "variable"
+    ].tolist()
     if skipped:
         logger.warning(
             "%d priority variable(s) have no dataset_id in T5 yet -- skipped: %s. These need "
@@ -44,10 +46,16 @@ def assemble_priorities(
     for _, row in priorities.iterrows():
         matches = t1[t1["dataset_id"] == row["dataset_id"]]
         if matches.empty:
-            logger.warning("%r: dataset_id=%r not in T1 -- skipping", row["variable"], row["dataset_id"])
+            logger.warning(
+                "%r: dataset_id=%r not in T1 -- skipping",
+                row["variable"],
+                row["dataset_id"],
+            )
             continue
         dataset_row = matches.iloc[0].to_dict()
-        da = load_variable(row["variable"], dataset_row, bbox, resolution_m=resolution_m)
+        da = load_variable(
+            row["variable"], dataset_row, bbox, resolution_m=resolution_m
+        )
         standardised = min_max(da.values)
         if row.get("directionality_of_concern") == "lower_is_more_concern":
             standardised = 1.0 - standardised
@@ -76,8 +84,14 @@ def extract_fingerprint(
         if matches.empty:
             continue
         dataset_row = matches.iloc[0].to_dict()
-        da = load_variable(row["variable"], dataset_row, bbox, resolution_m=resolution_m)
-        in_mask = da.values[opp_mask.astype(bool)] if opp_mask.shape == da.values.shape else da.values
+        da = load_variable(
+            row["variable"], dataset_row, bbox, resolution_m=resolution_m
+        )
+        in_mask = (
+            da.values[opp_mask.astype(bool)]
+            if opp_mask.shape == da.values.shape
+            else da.values
+        )
         fingerprint[f"{row['variable']}_mean_in_opp_space"] = float(np.nanmean(in_mask))
     return fingerprint
 

@@ -23,8 +23,15 @@ def local_raster_file(tmp_path):
     data = np.linspace(0, 100, 50 * 50, dtype="float32").reshape(50, 50)
     transform = from_bounds(-74.5, 18.0, -71.6, 20.1, 50, 50)
     with rasterio.open(
-        path, "w", driver="GTiff", height=50, width=50, count=1, dtype="float32",
-        crs="EPSG:4326", transform=transform,
+        path,
+        "w",
+        driver="GTiff",
+        height=50,
+        width=50,
+        count=1,
+        dtype="float32",
+        crs="EPSG:4326",
+        transform=transform,
     ) as dst:
         dst.write(data, 1)
     return tmp_path
@@ -56,6 +63,10 @@ def test_load_local_raster_missing_file_raises_clear_error(tmp_path, monkeypatch
 
 def test_load_local_raster_no_access_params_raises_clear_error(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    dataset_row = {"dataset_id": "no_params", "access_params": None, "download_url": "x"}
+    dataset_row = {
+        "dataset_id": "no_params",
+        "access_params": None,
+        "download_url": "x",
+    }
     with pytest.raises(FileNotFoundError, match="access_params"):
         _load_local_raster(dataset_row, (-74.5, 18.0, -71.6, 20.1), 5000)

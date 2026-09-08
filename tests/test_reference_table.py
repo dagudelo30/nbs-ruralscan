@@ -15,7 +15,11 @@ def test_reference_table_missing_row_falls_back_to_synthetic():
     synthetic, never silently invent a governance/finance score."""
     dataset_row = {"access_type": "reference_table", "dataset_id": "wb_wgi_governance"}
     da = load_variable(
-        "extension_governance", dataset_row, HAITI_BBOX, resolution_m=5000, country_iso3="HTI"
+        "extension_governance",
+        dataset_row,
+        HAITI_BBOX,
+        resolution_m=5000,
+        country_iso3="HTI",
     )
     assert da.attrs["is_synthetic"] is True
 

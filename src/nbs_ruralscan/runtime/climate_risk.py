@@ -42,15 +42,24 @@ def _load_and_normalise_t2_rows(
     for _, row in rows.iterrows():
         matches = t1[t1["dataset_id"] == row["dataset_id"]]
         if matches.empty:
-            logger.warning("T2 variable %r: dataset_id=%r not in T1 -- skipping", row["variable"], row["dataset_id"])
+            logger.warning(
+                "T2 variable %r: dataset_id=%r not in T1 -- skipping",
+                row["variable"],
+                row["dataset_id"],
+            )
             continue
         dataset_row = matches.iloc[0].to_dict()
-        da = load_variable(row["variable"], dataset_row, bbox, resolution_m=resolution_m)
+        da = load_variable(
+            row["variable"], dataset_row, bbox, resolution_m=resolution_m
+        )
         params = row["normalisation_params"]
         if isinstance(params, str):
             params = json.loads(params) if params else {}
         out[row["variable"]] = normalise(
-            da.values, row["normalisation_method"], params or {}, row.get("directionality", "positive_risk")
+            da.values,
+            row["normalisation_method"],
+            params or {},
+            row.get("directionality", "positive_risk"),
         )
     return out
 
@@ -102,7 +111,9 @@ def compose_risk(
     work, not guessed at here.
     """
     if not hazard_layers:
-        raise ValueError("no hazard layers to compose -- check relevant_hazards()/assemble_hazards()")
+        raise ValueError(
+            "no hazard layers to compose -- check relevant_hazards()/assemble_hazards()"
+        )
 
     exposure = (
         np.mean(np.stack(list(exposure_layers.values()), axis=-1), axis=-1)
@@ -111,7 +122,11 @@ def compose_risk(
     )
 
     hazard_names = list(hazard_layers.keys())
-    weights = t2.set_index("variable").loc[hazard_names, "weight_default"].to_numpy(dtype=float)
+    weights = (
+        t2.set_index("variable")
+        .loc[hazard_names, "weight_default"]
+        .to_numpy(dtype=float)
+    )
     weights = weights / weights.sum()
 
     per_hazard_risk = {name: hazard_layers[name] * exposure for name in hazard_names}

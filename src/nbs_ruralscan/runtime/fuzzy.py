@@ -29,7 +29,9 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def trapezoidal(x: np.ndarray, abs_min: float, opt_low: float, opt_high: float, abs_max: float) -> np.ndarray:
+def trapezoidal(
+    x: np.ndarray, abs_min: float, opt_low: float, opt_high: float, abs_max: float
+) -> np.ndarray:
     """0 below abs_min, ramps to 1 at opt_low, plateau at 1 until opt_high, ramps to 0 at abs_max.
 
     Defensive against malformed recipe rows (seen in the real data: `tree_canopy_cover` has
@@ -37,7 +39,9 @@ def trapezoidal(x: np.ndarray, abs_min: float, opt_low: float, opt_high: float, 
     NaN/negative-width ramps, and logs a warning so it surfaces for literature-team review
     instead of silently mis-scoring pixels.
     """
-    abs_min, opt_low, opt_high, abs_max = (float(v) for v in (abs_min, opt_low, opt_high, abs_max))
+    abs_min, opt_low, opt_high, abs_max = (
+        float(v) for v in (abs_min, opt_low, opt_high, abs_max)
+    )
     if abs_max < opt_high:
         logger.warning(
             "trapezoidal params malformed (abs_max=%s < opt_high=%s) -- clamping abs_max to "
@@ -70,7 +74,9 @@ def linear_increasing(x: np.ndarray, abs_min: float, opt_low: float) -> np.ndarr
     return np.clip(out, 0.0, 1.0)
 
 
-def linear_decreasing(x: np.ndarray, abs_min: float, opt_low: float, opt_high: float, abs_max: float) -> np.ndarray:
+def linear_decreasing(
+    x: np.ndarray, abs_min: float, opt_low: float, opt_high: float, abs_max: float
+) -> np.ndarray:
     """Same shape as `trapezoidal` -- kept as a distinct name because T4 encodes the
     "higher raw value is worse" semantics as a label, not a different formula; the four
     breakpoints already describe a peak-then-decline shape (see `distance_to_road`:
@@ -157,13 +163,17 @@ _DISPATCH = {
         else _trapezoidal_partial_params(x, p)
     ),
     "linear_increasing": lambda x, p: linear_increasing(x, p["abs_min"], p["opt_low"]),
-    "linear_decreasing": lambda x, p: linear_decreasing(x, p["abs_min"], p["opt_low"], p["opt_high"], p["abs_max"]),
+    "linear_decreasing": lambda x, p: linear_decreasing(
+        x, p["abs_min"], p["opt_low"], p["opt_high"], p["abs_max"]
+    ),
     "ranked_classes": lambda x, p: ranked_classes(x, p),
     "threshold": lambda x, p: threshold(x, p),
 }
 
 
-def standardise(x: np.ndarray, relationship_type: str, relationship_params: dict) -> np.ndarray:
+def standardise(
+    x: np.ndarray, relationship_type: str, relationship_params: dict
+) -> np.ndarray:
     """Dispatch to the right membership function per `T4.relationship_type`. Raises KeyError
     (not a silent pass-through) for a relationship_type this module doesn't implement yet --
     an unstandardised 0-1 mismatch would silently corrupt the weighted overlay downstream."""
