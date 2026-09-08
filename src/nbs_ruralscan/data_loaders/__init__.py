@@ -22,6 +22,7 @@ the recommended source to wire up next -- never silently treated as real data.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -78,6 +79,62 @@ def _recommended_source_note(dataset_row: dict[str, Any]) -> str:
     if dataset_row.get("citation"):
         parts.append(f"cite: {dataset_row['citation']}")
     return " | ".join(parts)
+
+
+def _load_local_raster(
+    dataset_row: dict[str, Any],
+    bbox: tuple[float, float, float, float],
+    resolution_m: int,
+) -> xr.DataArray:
+    """Open a manually-downloaded GeoTIFF from `data/raw/<dataset_id>/` and clip+reproject it
+    onto the requested bbox/resolution. The generic "Group B" pattern: one function, reused by
+    every raster the team downloads by hand (WorldClim v2, CGIAR-CSI aridity, HWSD v2) instead
+    of writing a bespoke loader per provider.
+
+    Reads `dataset_row["access_params"]` (a JSON string, T1's existing extensibility column --
+    reused rather than adding new ad-hoc T1 columns, which would need a matching update to the
+    frozen schema/structure/columns.json manifest). Expected keys:
+        local_filename (required) -- exact file to open inside `data/raw/<dataset_id>/`.
+        band (optional, 1-indexed) -- for a provider that ships one multi-band file.
+    """
+    import json as _json
+
+    import rioxarray as rxr
+
+    dataset_id = dataset_row["dataset_id"]
+    raw_params = dataset_row.get("access_params")
+    params = (
+        _json.loads(raw_params) if raw_params and isinstance(raw_params, str) else {}
+    )
+    filename = params.get("local_filename")
+    band = params.get("band")
+    if not filename:
+        raise FileNotFoundError(
+            f"T1 row for {dataset_id!r} has no access_params.local_filename set -- add "
+            '{"local_filename": "<exact filename>"} before this loader can find it.'
+        )
+    path = Path("data") / "raw" / dataset_id / filename
+    if not path.exists():
+        raise FileNotFoundError(
+            f"expected downloaded file at {path} for dataset_id={dataset_id!r} -- not found. "
+            f"Download it from {dataset_row.get('download_url')} and place it there first."
+        )
+
+    da = rxr.open_rasterio(path, masked=True)
+    if band is not None:
+        da = da.isel(band=int(band) - 1)
+    elif "band" in da.dims:
+        da = da.isel(band=0)
+
+    minx, miny, maxx, maxy = bbox
+    da = da.rio.clip_box(minx=minx, miny=miny, maxx=maxx, maxy=maxy)
+    if da.rio.crs is None:
+        da = da.rio.write_crs("EPSG:4326")
+    if da.rio.crs.to_epsg() != 4326:
+        da = da.rio.reproject("EPSG:4326")
+
+    da.attrs["is_synthetic"] = False
+    return da
 
 
 def _load_gee_asset(
@@ -287,10 +344,34 @@ def load_variable(
         da.attrs["recommended_source"] = source_note
         return da
 
-    # direct_download / api / proprietary_licensed -- no loader built yet for any of these
-    # (each needs per-provider handling: rasterio.open on a COG URL, an API call + point-to-
-    # grid rasterisation for something like ACLED, etc.). Same synthetic-fallback contract as
-    # gee_asset above, with the dataset's own T1 fields surfaced as the next thing to wire up.
+    if access_type == "direct_download":
+        try:
+            return _load_local_raster(dataset_row, bbox, resolution_m)
+        except FileNotFoundError as exc:
+            logger.warning(
+                "%r: %s Falling back to synthetic. Recommended source: %s",
+                variable,
+                exc,
+                source_note,
+            )
+        except Exception as exc:  # noqa: BLE001 -- any local-file/raster read failure should fall back to synthetic, not crash the pipeline
+            logger.warning(
+                "%r: local raster load failed (%s: %s) -- falling back to synthetic. "
+                "Recommended source: %s",
+                variable,
+                type(exc).__name__,
+                exc,
+                source_note,
+            )
+        da = _synthetic_raster(
+            variable, bbox, resolution_deg, value_range=synthetic_value_range
+        )
+        da.attrs["recommended_source"] = source_note
+        return da
+
+    # api / proprietary_licensed -- no loader built yet for either (each needs per-provider
+    # handling: an API call + point-to-grid rasterisation for something like ACLED, etc.).
+    # Same synthetic-fallback contract as the other branches above.
     logger.warning(
         "%r: no loader implemented yet for access_type=%r. Recommended source to explore "
         "next: %s",
