@@ -21,6 +21,7 @@ the recommended source to wire up next -- never silently treated as real data.
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -79,6 +80,106 @@ def _recommended_source_note(dataset_row: dict[str, Any]) -> str:
     if dataset_row.get("citation"):
         parts.append(f"cite: {dataset_row['citation']}")
     return " | ".join(parts)
+
+
+def _load_hwsd_drainage(
+    dataset_row: dict[str, Any],
+    bbox: tuple[float, float, float, float],
+    resolution_m: int,
+) -> xr.DataArray:
+    """HWSD2's raster stores Soil Mapping Unit (SMU) IDs, not drainage class directly -- the
+    real drainage value lives in a separate attribute database (`HWSD2_SMU` table, keyed by
+    `HWSD2_SMU_ID`), confirmed against the real schema of the official SQLite distribution
+    (https://www.isric.org/sites/default/files/HWSD2.sqlite -- ISRIC, one of the HWSD
+    partners). Not a scale conversion like pH/SOC/aridity -- this is a raster-ID-to-attribute-
+    table join, a different pattern to any other loader in this module.
+
+    Steps:
+      1. Read the raw SMU-ID raster via `_load_local_raster` (reuses the same clip/reproject).
+      2. Build a {smu_id: drainage_code} lookup from `HWSD2_SMU`, taking the dominant soil
+         component per SMU (highest `SHARE`) when an SMU has more than one associated soil.
+      3. Remap every pixel's SMU ID to its dominant drainage code.
+
+    Expects `dataset_row["access_params"]` to also carry `sqlite_filename` (the SQLite
+    database's filename, expected alongside the raster in the same
+    `data/raw/<dataset_id>/` folder) -- its presence is what routes `load_variable` here
+    instead of the plain `_load_local_raster` path (see the `direct_download` branch below).
+    """
+    import json as _json
+    import sqlite3
+
+    dataset_id = dataset_row["dataset_id"]
+    raw_params = dataset_row.get("access_params")
+    params = (
+        _json.loads(raw_params) if raw_params and isinstance(raw_params, str) else {}
+    )
+    sqlite_filename = params.get("sqlite_filename")
+    if not sqlite_filename:
+        raise FileNotFoundError(
+            f"T1 row for {dataset_id!r} has no access_params.sqlite_filename set -- add it "
+            "before this loader can find the HWSD2 attribute database."
+        )
+
+    # Same cwd-vs-package-location fallback as _load_local_raster (Jupyter's cwd is often not
+    # the repo root -- confirmed as a real bug there already).
+    candidates = [
+        Path("data") / "raw" / dataset_id / sqlite_filename,
+        Path(__file__).resolve().parents[3]
+        / "data"
+        / "raw"
+        / dataset_id
+        / sqlite_filename,
+    ]
+    sqlite_path = next((p for p in candidates if p.exists()), candidates[0])
+    if not sqlite_path.exists():
+        raise FileNotFoundError(
+            f"expected the HWSD2 SQLite attribute database at {sqlite_path} -- not found. "
+            "Download it from https://www.isric.org/sites/default/files/HWSD2.sqlite and "
+            "place it there first."
+        )
+
+    # 1. raw SMU-ID raster (already clipped/reprojected)
+    smu_da = _load_local_raster(dataset_row, bbox, resolution_m)
+
+    # 2. dominant-component drainage lookup, built from the real HWSD2_SMU schema
+    con = sqlite3.connect(sqlite_path)
+    try:
+        cur = con.cursor()
+        cur.execute("SELECT HWSD2_SMU_ID, DRAINAGE, SHARE FROM HWSD2_SMU")
+        smu_rows = cur.fetchall()
+    finally:
+        con.close()
+
+    dominant_drainage: dict[int, float] = {}
+    best_share: dict[int, float] = {}
+    for smu_id, drainage, share in smu_rows:
+        if drainage is None:
+            continue
+        share = share or 0
+        if smu_id not in best_share or share > best_share[smu_id]:
+            best_share[smu_id] = share
+            dominant_drainage[smu_id] = float(drainage)
+
+    # 3. remap every pixel's SMU ID to its dominant drainage code. Vectorised via a lookup
+    # array rather than np.vectorize (slow, one Python call per pixel) -- safe because SMU IDs
+    # are bounded positive integers (confirmed: HWSD's ~30,000 mapping units, well under any
+    # reasonable array-index limit for a country-sized AOI raster).
+    smu_values = smu_da.values
+    valid = np.isfinite(smu_values)
+    max_id = int(np.nanmax(smu_values[valid])) if valid.any() else 0
+    lookup_table = np.full(max_id + 1, np.nan)
+    for smu_id, drainage in dominant_drainage.items():
+        if 0 <= smu_id <= max_id:
+            lookup_table[smu_id] = drainage
+
+    drainage_values = np.full_like(smu_values, np.nan, dtype=float)
+    safe_idx = valid & (smu_values >= 0) & (smu_values <= max_id)
+    drainage_values[safe_idx] = lookup_table[smu_values[safe_idx].astype(int)]
+
+    da = smu_da.copy(data=drainage_values)
+    da.attrs["is_synthetic"] = False
+    da.attrs["variable"] = "soil_drainage"
+    return da
 
 
 def _load_local_raster(
@@ -357,6 +458,16 @@ def load_variable(
 
     if access_type == "direct_download":
         try:
+            # HWSD2-style datasets need an ID -> attribute-table join (access_params carries
+            # sqlite_filename); everything else is a plain raster open+clip+reproject.
+            raw_params = dataset_row.get("access_params")
+            params = (
+                json.loads(raw_params)
+                if raw_params and isinstance(raw_params, str)
+                else {}
+            )
+            if params.get("sqlite_filename"):
+                return _load_hwsd_drainage(dataset_row, bbox, resolution_m)
             return _load_local_raster(dataset_row, bbox, resolution_m)
         except FileNotFoundError as exc:
             logger.warning(

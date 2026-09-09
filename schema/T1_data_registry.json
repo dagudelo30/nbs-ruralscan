@@ -135,7 +135,8 @@
     "description": "Harmonized World Soil Database v2 — global ~1 km soil units with property attributes.",
     "grain_type": "grid",
     "access_params": {
-      "local_filename": "HWSD2.bil"
+      "local_filename": "HWSD2.bil",
+      "sqlite_filename": "HWSD2.sqlite"
     }
   },
   {
