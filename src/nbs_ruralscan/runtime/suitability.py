@@ -280,11 +280,28 @@ def assemble_variables(
     (e.g. with a BIND-resolved id). `country_iso3` is required for any T1 row with
     access_type=reference_table (country-level statistics) -- without it, those variables
     always fall back to synthetic regardless of what's in schema/reference/country_statistics.csv.
+
+    Skips any row whose own T4.justification marks it an M2b Stream-B operational lever
+    ("Filter/flag, never summed") -- confirmed against 8 real T4 rows carrying that exact
+    marker (accessibility_travel_time, electrification_index, tenure_security,
+    conflict_fragility_index, extension_governance, finance_credit_access, market_value_chain,
+    labour_availability). These are meant for the not-yet-built M2b (project/investment risk)
+    module, not M1's weighted suitability overlay -- summing them into M1 would silently
+    contradict what the recipe's own justification field already says. Not dropped from T4,
+    not un-loadable (the per-variable audit notebook still calls `load_and_align_one_variable`
+    directly per row, unaffected by this M1-level filter), just kept out of the sum here.
     """
     layers = {}
     audit: list[ResolutionAuditRow] = []
     for _, row in t4.iterrows():
         var = row["variable"]
+        if "M2b Stream-B" in str(row.get("justification", "")):
+            logger.info(
+                "%r: T4 marks this an M2b Stream-B lever ('Filter/flag, never summed') -- "
+                "excluded from M1's weighted overlay pending M2b's own implementation.",
+                var,
+            )
+            continue
         override = (dataset_ids or {}).get(var)
         da, audit_row = load_and_align_one_variable(
             var,
@@ -481,10 +498,36 @@ def run_m1(
     )
     standardised = standardise_stack(layers, t4)
     kept_variables, cluster_log = reduce_correlated(standardised, correlation_threshold)
-    weights, weight_log = derive_weights(kept_variables, standardised, t4)
+
+    # 6.5 says threshold-type variables become a hard mask, never a weighted-sum criterion --
+    # confirmed as a real bug against a live run: derive_weights/weighted_overlay were given
+    # ALL of kept_variables, threshold rows included, so e.g. protected_area_status (T4
+    # weight_default=0.526, the single largest weight in the recipe) was being counted BOTH as
+    # a normal weighted term AND as the final hard mask -- double-counted, not excluded. Since
+    # a threshold variable's standardised value is 1.0 everywhere it isn't excluded, weighting
+    # it into the sum adds a flat, non-discriminating bonus across most of the AOI instead of
+    # letting genuinely continuous variables (slope, tree_canopy_cover) carry their full share.
+    threshold_vars = set(t4[t4["relationship_type"] == "threshold"]["variable"])
+    summed_variables = [v for v in kept_variables if v not in threshold_vars]
+
+    weights, weight_log = derive_weights(summed_variables, standardised, t4)
     exclusion_mask = apply_structural_exclusions(standardised, t4)
 
-    stack = np.stack([standardised[v] for v in kept_variables], axis=-1)
+    # Water isn't a criterion to average against the rest -- it's a hard exclusion, same
+    # mechanism as protected_area_status. Confirmed as a real gap against a live run: the
+    # weighted overlay was mixing land_cover's correct water penalty (code 80 -> suitability
+    # 0.0) with every OTHER variable's NaN-fill-with-mean strategy treating ocean pixels as
+    # "typical Haiti land" -- giving the sea a diluted, misleadingly non-zero score instead of
+    # being excluded outright. Uses land_cover's raw (pre-standardisation) value, since
+    # standardised["land_cover"] is already fuzzy-transformed and the class code is gone by
+    # then.
+    if "land_cover" in layers:
+        water_mask = layers["land_cover"].values != 80
+        exclusion_mask = (
+            water_mask if exclusion_mask is None else (exclusion_mask & water_mask)
+        )
+
+    stack = np.stack([standardised[v] for v in summed_variables], axis=-1)
     suitability = weighted_overlay(stack, weights)
     if exclusion_mask is not None:
         suitability = np.where(exclusion_mask, suitability, 0.0)
@@ -498,7 +541,8 @@ def run_m1(
         "layers": layers,
         "resolution_audit": resolution_audit,
         "standardised": standardised,
-        "kept_variables": kept_variables,
+        "kept_variables": summed_variables,
+        "excluded_as_hard_mask": sorted(threshold_vars & set(kept_variables)),
         "cluster_log": cluster_log,
         "weights": weights,
         "weight_log": weight_log,
