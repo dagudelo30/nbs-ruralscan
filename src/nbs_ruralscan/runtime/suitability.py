@@ -84,6 +84,10 @@ _RAW_VALUE_TRANSFORMS: dict[str, Callable[[np.ndarray], np.ndarray]] = {
     # (a Kenya agroforestry study: SOC rising 0.8% -> 1.4% under adoption), so the fix here
     # is the missing unit conversion, not the recipe's thresholds.
     "soil_organic_carbon": lambda x: x / 100.0,
+    # CGIAR-CSI Global Aridity Index v3.1 (figshare, confirmed 2025-07 release): "Aridity
+    # Index values... have been multiplied by a factor of 10,000 to derive and distribute the
+    # data as integers". raw/10000 recovers the real P/PET ratio.
+    "aridity_index": lambda x: x / 10_000.0,
 }
 
 
