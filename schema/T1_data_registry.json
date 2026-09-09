@@ -205,7 +205,7 @@
     "description": "Global-Aridity Index v3 — long-term P/PET ratio at ~1 km (CGIAR-CSI).",
     "grain_type": "grid",
     "access_params": {
-      "local_filename": "ai_v3_yr.tif"
+      "local_filename": "ai_v31_yr.tif"
     }
   },
   {
