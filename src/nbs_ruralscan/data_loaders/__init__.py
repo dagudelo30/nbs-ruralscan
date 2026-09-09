@@ -141,10 +141,36 @@ def _load_hwsd_drainage(
     # 1. raw SMU-ID raster (already clipped/reprojected)
     smu_da = _load_local_raster(dataset_row, bbox, resolution_m)
 
-    # 2. dominant-component drainage lookup, built from the real HWSD2_SMU schema
+    # 2. dominant-component drainage lookup, built from the real HWSD2_SMU schema. Confirmed
+    # against a real run: HWSD2_SMU.DRAINAGE stores a TEXT SYMBOL (e.g. 'MW' = Moderately
+    # Well), not the numeric code T4's fuzzy standardisation expects -- the numeric code lives
+    # in a second table, D_DRAINAGE (SYMBOL, CODE, VALUE), confirmed via the real reported
+    # schema. Two joins, not one: HWSD2_SMU.DRAINAGE (symbol) -> D_DRAINAGE.SYMBOL -> CODE.
     con = sqlite3.connect(sqlite_path)
     try:
         cur = con.cursor()
+        # Confirmed against real data from a live query: this table's column NAMES are
+        # swapped relative to their actual content. The column literally named "SYMBOL"
+        # holds the numeric code (e.g. 1), and the column literally named "CODE" holds the
+        # text symbol (e.g. 'E' for "Excessively drained") -- the opposite of what the names
+        # suggest. Reading them by position, not by assumed semantics, this time.
+        cur.execute("SELECT CODE, SYMBOL FROM D_DRAINAGE")
+        symbol_to_code = {}
+        skipped_codes = []
+        for symbol, code in cur.fetchall():
+            try:
+                symbol_to_code[symbol] = float(code)
+            except (TypeError, ValueError):
+                skipped_codes.append((symbol, code))
+        if skipped_codes:
+            logger.warning(
+                "D_DRAINAGE: %d row(s) had a non-numeric CODE, skipped rather than crashing "
+                "the whole loader -- %s. The real table structure differs from what this "
+                "loader assumed; flag for review.",
+                len(skipped_codes),
+                skipped_codes[:5],
+            )
+
         cur.execute("SELECT HWSD2_SMU_ID, DRAINAGE, SHARE FROM HWSD2_SMU")
         smu_rows = cur.fetchall()
     finally:
@@ -152,13 +178,14 @@ def _load_hwsd_drainage(
 
     dominant_drainage: dict[int, float] = {}
     best_share: dict[int, float] = {}
-    for smu_id, drainage, share in smu_rows:
-        if drainage is None:
+    for smu_id, drainage_symbol, share in smu_rows:
+        code = symbol_to_code.get(drainage_symbol)
+        if code is None:
             continue
         share = share or 0
         if smu_id not in best_share or share > best_share[smu_id]:
             best_share[smu_id] = share
-            dominant_drainage[smu_id] = float(drainage)
+            dominant_drainage[smu_id] = code
 
     # 3. remap every pixel's SMU ID to its dominant drainage code. Vectorised via a lookup
     # array rather than np.vectorize (slow, one Python call per pixel) -- safe because SMU IDs

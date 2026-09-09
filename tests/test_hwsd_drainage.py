@@ -1,8 +1,16 @@
 """Tests for the HWSD2 SMU-ID -> drainage-class attribute join (_load_hwsd_drainage).
 
-Schema confirmed against the real HWSD2.sqlite (ISRIC): the HWSD2_SMU table has
-HWSD2_SMU_ID, DRAINAGE, SHARE columns -- no mock schema guessing, this matches the actual
-database structure reported from a real download.
+Schema confirmed against the real HWSD2.sqlite (ISRIC), with real DATA (not just column
+names) verified over two rounds of debugging:
+  1. HWSD2_SMU.DRAINAGE stores a TEXT SYMBOL (e.g. 'MW'), not a numeric code -- confirmed
+     against a real run that raised "could not convert string to float: 'MW'".
+  2. D_DRAINAGE's own column NAMES are swapped relative to their content: the column
+     literally named SYMBOL holds the numeric code, and the column literally named CODE
+     holds the text symbol -- confirmed against real row data:
+     (1, 'E', 'Excessively drained'), (4, 'MW', 'Moderately well drained'), etc.
+This fixture reproduces both real quirks exactly, not a "clean" idealised schema -- an
+earlier version of this fixture used sensible column names/types and would NOT have caught
+either bug.
 """
 
 from __future__ import annotations
@@ -43,15 +51,27 @@ def hwsd_files(tmp_path):
 
     con = sqlite3.connect(dataset_dir / "HWSD2.sqlite")
     con.execute(
-        "CREATE TABLE HWSD2_SMU (ID INTEGER, HWSD2_SMU_ID INTEGER, DRAINAGE REAL, SHARE REAL)"
+        "CREATE TABLE HWSD2_SMU (ID INTEGER, HWSD2_SMU_ID INTEGER, DRAINAGE TEXT, SHARE REAL)"
+    )
+    # Column names SWAPPED relative to content, matching the real HWSD2.sqlite exactly:
+    # "SYMBOL" holds the number, "CODE" holds the text -- not a typo.
+    con.execute("CREATE TABLE D_DRAINAGE (SYMBOL INTEGER, CODE TEXT, VALUE TEXT)")
+    con.executemany(
+        "INSERT INTO D_DRAINAGE (SYMBOL, CODE, VALUE) VALUES (?,?,?)",
+        [
+            (1, "E", "Excessively drained"),
+            (3, "W", "Well drained"),
+            (6, "P", "Poorly drained"),
+            (7, "VP", "Very poorly drained"),
+        ],
     )
     con.executemany(
         "INSERT INTO HWSD2_SMU (ID, HWSD2_SMU_ID, DRAINAGE, SHARE) VALUES (?,?,?,?)",
         [
-            (1, 1001, 3.0, 70.0),  # dominant component for SMU 1001
-            (2, 1001, 5.0, 30.0),  # minority component -- must NOT win
-            (3, 1002, 1.0, 100.0),
-            (4, 1003, 6.0, 100.0),
+            (1, 1001, "W", 70.0),  # dominant component for SMU 1001
+            (2, 1001, "VP", 30.0),  # minority component -- must NOT win
+            (3, 1002, "E", 100.0),
+            (4, 1003, "P", 100.0),
             # 9999 deliberately has no row -- tests the "no match" -> NaN path
         ],
     )
@@ -69,7 +89,7 @@ def test_dominant_component_wins_by_share(hwsd_files, monkeypatch):
     }
     da = _load_hwsd_drainage(row, HAITI_BBOX, 5000)
     present = set(da.values[~np.isnan(da.values)].tolist())
-    assert present == {1.0, 3.0, 6.0}  # 3.0, not 5.0, for SMU 1001
+    assert present == {1.0, 3.0, 6.0}  # code 3 (W), not 7 (VP), for SMU 1001
 
 
 def test_unmatched_smu_id_becomes_nan(hwsd_files, monkeypatch):
