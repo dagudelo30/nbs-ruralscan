@@ -239,14 +239,17 @@
     ],
     "data_format": "shapefile",
     "access_type": "direct_download",
-    "download_url": "https://download.geofabrik.de/",
+    "download_url": "https://download.geofabrik.de/central-america/haiti-and-domrep-latest-free.shp.zip",
     "license": "ODbL-1.0",
     "citation": "OpenStreetMap contributors (2024). OpenStreetMap. www.openstreetmap.org.",
     "version": "2024 annual snapshot",
     "preprocessing_notes": "Compute Euclidean distance to nearest road of any class. Used by Chuma et al. (2021) as infrastructure accessibility layer. Apply 5km threshold as moderate accessibility constraint for agroforestry market access. is_scenario_candidate = true (road investment can change this).",
     "limitations": "OSM coverage quality is highly variable in rural sub-Saharan Africa, Central Asia, and remote tropical regions — significant under-mapping in key project areas. Validate against national road datasets where possible. Not for: Routing or logistics planning; travel-time modelling without validation",
     "description": "OpenStreetMap global road network vector lines, multiple admin levels.",
-    "grain_type": "vector"
+    "grain_type": "vector",
+    "access_params": {
+      "local_filename": "gis_osm_roads_free_1.shp"
+    }
   },
   {
     "dataset_id": "worldpop_population_density",

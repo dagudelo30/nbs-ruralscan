@@ -209,6 +209,96 @@ def _load_hwsd_drainage(
     return da
 
 
+def _load_road_distance(
+    dataset_row: dict[str, Any],
+    bbox: tuple[float, float, float, float],
+    resolution_m: int,
+) -> xr.DataArray:
+    """OSM road network (Geofabrik shapefile, LINE geometries) -> distance-to-nearest-road
+    raster, in KILOMETRES (confirmed against T4's own relationship_params for
+    distance_to_road: abs_min=0, opt_high=3, abs_max=20 -- 20 metres would be an absurdly
+    tight threshold, 20km is a realistic "too far from any road" cutoff for agroforestry
+    market access).
+
+    Different pattern from `_load_local_raster`: this reads a VECTOR file and computes a
+    per-pixel distance calculation, not just opening a pre-existing raster grid. Distances are
+    computed in a local UTM projection (EPSG:32618, zone 18N -- covers the great majority of
+    Haiti; a 5km-resolution scoping tool doesn't need to chase the exact zone boundary at
+    -72 deg), not in raw degrees, since a degree of longitude isn't a fixed real-world
+    distance (it shrinks toward the poles) -- projecting first avoids introducing that
+    distortion into the distance itself, not just approximating it away afterward.
+    """
+    import json as _json
+
+    import geopandas as gpd
+    from shapely.strtree import STRtree
+
+    dataset_id = dataset_row["dataset_id"]
+    raw_params = dataset_row.get("access_params")
+    params = (
+        _json.loads(raw_params) if raw_params and isinstance(raw_params, str) else {}
+    )
+    filename = params.get("local_filename")
+    if not filename:
+        raise FileNotFoundError(
+            f"T1 row for {dataset_id!r} has no access_params.local_filename set -- add "
+            '{"local_filename": "<exact .shp filename>"} before this loader can find it.'
+        )
+    candidates = [
+        Path("data") / "raw" / dataset_id / filename,
+        Path(__file__).resolve().parents[3] / "data" / "raw" / dataset_id / filename,
+    ]
+    path = next((p for p in candidates if p.exists()), candidates[0])
+    if not path.exists():
+        raise FileNotFoundError(
+            f"expected downloaded shapefile at {path} for dataset_id={dataset_id!r} -- not "
+            f"found. Download it from {dataset_row.get('download_url')} and place it there "
+            "first."
+        )
+
+    roads = gpd.read_file(path)
+    minx, miny, maxx, maxy = bbox
+    pad_deg = (
+        0.5  # roads just outside the AOI still matter for edge pixels' nearest-road
+    )
+    roads = roads.cx[minx - pad_deg : maxx + pad_deg, miny - pad_deg : maxy + pad_deg]
+    if roads.empty:
+        raise ValueError(
+            f"no road features found near this AOI in {path} -- check the shapefile actually "
+            "covers this bbox."
+        )
+
+    utm_crs = "EPSG:32618"
+    roads_utm = roads.to_crs(utm_crs)
+    tree = STRtree(roads_utm.geometry.values)
+
+    resolution_deg = resolution_m / 111_320
+    width = max(1, int(np.ceil((maxx - minx) / resolution_deg)))
+    height = max(1, int(np.ceil((maxy - miny) / resolution_deg)))
+    lons = minx + (np.arange(width) + 0.5) * resolution_deg
+    lats = maxy - (np.arange(height) + 0.5) * resolution_deg
+
+    grid_points = gpd.GeoSeries(
+        gpd.points_from_xy(np.tile(lons, height), np.repeat(lats, width)),
+        crs="EPSG:4326",
+    ).to_crs(utm_crs)
+
+    nearest_idx = tree.nearest(grid_points.values)
+    nearest_geoms = roads_utm.geometry.values[nearest_idx]
+    distances_m = np.array(
+        [
+            pt.distance(geom)
+            for pt, geom in zip(grid_points.values, nearest_geoms, strict=True)
+        ]
+    )
+    distances_km = (distances_m / 1000.0).reshape(height, width)
+
+    da = xr.DataArray(distances_km, coords={"y": lats, "x": lons}, dims=("y", "x"))
+    da.rio.write_crs("EPSG:4326", inplace=True)
+    da.attrs["is_synthetic"] = False
+    return da
+
+
 def _load_local_raster(
     dataset_row: dict[str, Any],
     bbox: tuple[float, float, float, float],
@@ -495,6 +585,8 @@ def load_variable(
             )
             if params.get("sqlite_filename"):
                 return _load_hwsd_drainage(dataset_row, bbox, resolution_m)
+            if dataset_row.get("data_format") == "shapefile":
+                return _load_road_distance(dataset_row, bbox, resolution_m)
             return _load_local_raster(dataset_row, bbox, resolution_m)
         except FileNotFoundError as exc:
             logger.warning(

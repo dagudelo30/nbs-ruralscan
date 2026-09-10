@@ -70,6 +70,35 @@ class ResolutionAuditRow:
 # 1/(1+x) rather than a bare 1/x to avoid a divide-by-zero exactly in-city (x=0), while still
 # giving accessibility=1.0 there and decaying smoothly toward 0 as travel time grows -- and it
 # lands neatly inside T4's own [0, opt_low=1] ramp.
+def _elevation_to_slope_degrees(elevation_da) -> np.ndarray:
+    """Real terrain slope (degrees) from a raw elevation grid -- not a per-pixel lookup, uses
+    each cell's difference against its neighbours (standard central-difference gradient
+    method), so this only lives here, not in `_RAW_VALUE_TRANSFORMS`.
+
+    Pixel spacing is read from the DataArray's own x/y coordinates (already the exact
+    analysis grid after `_align_to_grid`) and converted from degrees to metres -- longitude
+    degrees shrink with latitude (cos(lat)), so this is computed per-row, not as one constant
+    factor for the whole AOI.
+    """
+    elevation = elevation_da.values.astype(float)
+    lats = elevation_da.y.values
+    lons = elevation_da.x.values
+
+    dx_deg = float(np.mean(np.diff(lons))) if len(lons) > 1 else 1.0
+    dy_deg = float(np.mean(np.diff(lats))) if len(lats) > 1 else 1.0
+    metres_per_deg_lat = 111_320.0
+    dy_m = abs(dy_deg) * metres_per_deg_lat
+    dx_m_per_row = abs(dx_deg) * metres_per_deg_lat * np.cos(np.radians(lats))
+    dx_m_per_row = np.clip(dx_m_per_row, 1.0, None)  # guard against a pole-adjacent AOI
+
+    dz_dy, dz_dx = np.gradient(elevation, axis=(0, 1))
+    dz_dy = dz_dy / dy_m
+    dz_dx = dz_dx / dx_m_per_row[:, None]
+
+    slope_rad = np.arctan(np.sqrt(dz_dx**2 + dz_dy**2))
+    return np.degrees(slope_rad)
+
+
 _RAW_VALUE_TRANSFORMS: dict[str, Callable[[np.ndarray], np.ndarray]] = {
     "accessibility_travel_time": lambda x: 1.0 / (1.0 + x),
     # SoilGrids stores pH x 10 (ISRIC's own documented convention: "Soil pH x 10 in H2O...
@@ -255,6 +284,19 @@ def load_and_align_one_variable(
         da.attrs["variable"] = var
         logger.info("%r: applied raw-value transform per T1.preprocessing_notes", var)
 
+    # "slope" is a special case, not a simple elementwise scale factor: T1's srtm_dem_* source
+    # is raw ELEVATION (metres), not slope. Confirmed as a real bug against a live run -- T4's
+    # thresholds expect slope in DEGREES with abs_max=24, so feeding raw elevation (0-1768m
+    # across Haiti) straight through collapsed suitability to 0 at nearly every pixel in the
+    # country, silently. Needs neighbouring-pixel differencing (a real terrain-slope
+    # calculation), not a per-pixel lambda, so it can't live in _RAW_VALUE_TRANSFORMS -- that
+    # dict only ever sees da.values in isolation, not the surrounding grid or pixel spacing.
+    if var == "slope" and not da.attrs.get("is_synthetic", False):
+        da = da.copy(data=_elevation_to_slope_degrees(da))
+        da.attrs["is_synthetic"] = False
+        da.attrs["variable"] = var
+        logger.info("%r: converted raw elevation (m) to terrain slope (degrees)", var)
+
     audit_row = ResolutionAuditRow(
         variable=var,
         dataset_id=dataset_id,
@@ -336,15 +378,26 @@ def standardise_stack(
 
 
 def reduce_correlated(
-    standardised: dict[str, np.ndarray], threshold: float = 0.7
+    standardised: dict[str, np.ndarray],
+    threshold: float = 0.7,
+    exclude_from_correlation: set[str] | None = None,
 ) -> tuple[list[str], dict]:
     """6.3 -- pairwise Pearson correlation across standardised bands; cluster |r| > threshold;
     one representative per cluster, chosen by highest variance (Ani's principle 1 default --
     T4.is_cluster_default expert override not yet wired in, since draft-0 doesn't populate it).
     Returns (kept_variables, cluster_log) where cluster_log maps every variable to its
     representative.
+
+    `exclude_from_correlation` (categorical/threshold-type T4 rows, e.g. land_cover,
+    protected_area_status) never enter the Pearson correlation graph at all -- confirmed as a
+    real risk, not just a style concern: Pearson correlation assumes continuous variables, and
+    the representative-by-variance rule means a low-cardinality categorical/binary variable
+    could outscore a genuinely continuous variable it happens to numerically correlate with,
+    silently dropping that continuous variable from the analysis. Each excluded variable is
+    returned as its own singleton cluster instead, exactly as if nothing correlated with it.
     """
-    variables = list(standardised.keys())
+    exclude_from_correlation = exclude_from_correlation or set()
+    variables = [v for v in standardised if v not in exclude_from_correlation]
     flat = {v: standardised[v].ravel().astype(float) for v in variables}
 
     # union-find over the |r| > threshold graph
@@ -380,6 +433,11 @@ def reduce_correlated(
         kept.append(representative)
         for m in members:
             cluster_log[m] = representative
+
+    for v in exclude_from_correlation:
+        if v in standardised:
+            kept.append(v)
+            cluster_log[v] = v
 
     return kept, cluster_log
 
@@ -497,7 +555,16 @@ def run_m1(
         t4, t1, bbox, resolution_m, dataset_ids, country_iso3=country_iso3
     )
     standardised = standardise_stack(layers, t4)
-    kept_variables, cluster_log = reduce_correlated(standardised, correlation_threshold)
+    # Categorical/threshold T4 rows never compete for correlation grouping against continuous
+    # ones -- see reduce_correlated's own docstring for why (Pearson assumes continuous data,
+    # and the variance-based representative rule could let a categorical variable silently
+    # absorb and drop a real continuous one it happens to correlate with).
+    categorical_vars = set(
+        t4[t4["relationship_type"].isin(["ranked_classes", "threshold"])]["variable"]
+    )
+    kept_variables, cluster_log = reduce_correlated(
+        standardised, correlation_threshold, exclude_from_correlation=categorical_vars
+    )
 
     # 6.5 says threshold-type variables become a hard mask, never a weighted-sum criterion --
     # confirmed as a real bug against a live run: derive_weights/weighted_overlay were given

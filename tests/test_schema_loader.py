@@ -99,3 +99,74 @@ def test_soil_organic_carbon_raw_value_transform():
     percent = transform(np.array([262, 1266]))
     assert percent[0] == pytest.approx(2.62)
     assert percent[1] == pytest.approx(12.66)
+
+
+def test_elevation_to_slope_degrees_known_gradient():
+    """A synthetic exact-tilted-plane DEM (rises 100m every 1000m east-west, flat north-south)
+    has a known, constant slope everywhere: arctan(100/1000) = 5.71 degrees. Confirmed against
+    a real run: feeding raw SRTM elevation (metres, up to 1768m across Haiti) straight into
+    T4's slope thresholds (abs_max=24) collapsed suitability to 0 almost everywhere -- this is
+    the fix, computing actual terrain slope in degrees before standardisation."""
+    import numpy as np
+    import xarray as xr
+
+    from nbs_ruralscan.runtime.suitability import _elevation_to_slope_degrees
+
+    resolution_deg = 1000 / 111_320
+    lons = np.arange(0, 20 * resolution_deg, resolution_deg)
+    lats = np.arange(0, 15 * resolution_deg, resolution_deg)
+    elevation = np.zeros((len(lats), len(lons)))
+    for j in range(len(lons)):
+        elevation[:, j] = j * 100
+
+    da = xr.DataArray(elevation, coords={"y": lats, "x": lons}, dims=("y", "x"))
+    slope = _elevation_to_slope_degrees(da)
+    assert slope[5:10, 5:15] == pytest.approx(5.71, abs=0.05)
+
+
+def test_elevation_to_slope_degrees_flat_terrain_is_zero():
+    import numpy as np
+    import xarray as xr
+
+    from nbs_ruralscan.runtime.suitability import _elevation_to_slope_degrees
+
+    da = xr.DataArray(
+        np.full((10, 10), 250.0),
+        coords={"y": np.arange(10) * 0.01, "x": np.arange(10) * 0.01},
+        dims=("y", "x"),
+    )
+    slope = _elevation_to_slope_degrees(da)
+    assert slope == pytest.approx(0.0, abs=1e-6)
+
+
+def test_reduce_correlated_never_merges_excluded_categorical_variable():
+    """Confirmed as a real risk, not just theoretical: without exclude_from_correlation, a
+    categorical/binary variable can numerically out-correlate and out-variance a genuinely
+    continuous variable it happens to correlate with, becoming the cluster's "representative"
+    and silently dropping the continuous variable from the whole analysis. This constructs
+    that exact scenario (a binary variable built as a perfect >0.5 threshold of a continuous
+    one) and confirms exclude_from_correlation keeps them both."""
+    import numpy as np
+
+    from nbs_ruralscan.runtime.suitability import reduce_correlated
+
+    rng = np.random.default_rng(0)
+    continuous = rng.uniform(0, 1, (10, 10))
+    categorical = (continuous > 0.5).astype(float)  # perfectly correlated, on purpose
+    standardised = {
+        "variable_continua": continuous,
+        "variable_categorica": categorical,
+        "otra_continua": rng.uniform(0, 1, (10, 10)),
+    }
+
+    # Without the fix: the continuous variable gets absorbed into the categorical one.
+    kept_before, _ = reduce_correlated(standardised, threshold=0.7)
+    assert "variable_continua" not in kept_before
+
+    # With the fix: both survive as separate kept variables.
+    kept_after, log_after = reduce_correlated(
+        standardised, threshold=0.7, exclude_from_correlation={"variable_categorica"}
+    )
+    assert "variable_continua" in kept_after
+    assert "variable_categorica" in kept_after
+    assert log_after["variable_categorica"] == "variable_categorica"
