@@ -330,17 +330,17 @@
     "nbs_id": "agroforestry",
     "dataset_id": "global_aridity_index_v3",
     "suitability_dimension": "biophysical_constraint",
-    "relationship_type": "trapezoidal",
+    "relationship_type": "linear_increasing",
     "relationship_params": {
-      "abs_min": 5000.0,
-      "opt_low": 35000.0
+      "abs_min": 0.05,
+      "opt_low": 0.65
     },
     "uncertainty_pct": 20.0,
     "is_scenario_candidate": false,
     "has_future_projection": false,
     "weight_default": 0.08,
     "weight_adjustable": true,
-    "justification": "Reconciled from 1 evidence unit(s) (weighted median, tier×claim_basis). Global {'abs_min': 5000.0, 'opt_low': 35000.0}; uncertainty ±20% from spread. ",
+    "justification": "[PLACEHOLDER -- PENDING TEAM REVIEW, 2026-09] Original abs_min=5000/opt_low=35000 traced to zero surviving evidence: of 9 EV_evidence_register rows tagged aridity_index+agroforestry, the ones with numeric content (Brandt 2015, KCSAP 2016, a Zomer14 duplicate) are all review_state=dropped (reason:off_scope); the 2 that survived review (Zomer 2014, Ahmad 2020) give only a QUALITATIVE direction (more arid = worse for tree cover/agroforestry suitability), no numeric threshold. Interim values here use the standard UNEP (1992) aridity classification (hyper-arid <0.05, humid >=0.65 -- confirmed against IPCC AR6 WGII and UNCCD), chosen because it matches Zomer 2014s surviving finding that high tree cover concentrates in humid regions. NOT evidence-extracted -- needs Namita/team sign-off before treating as final.",
     "variable": "aridity_index",
     "suitability_family_id": "agroforestry__planted_silvoarable",
     "n_sources": 1,
