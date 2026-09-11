@@ -30,6 +30,7 @@ from itertools import combinations
 
 import numpy as np
 import pandas as pd
+from scipy.stats import kendalltau
 
 from nbs_ruralscan.data_loaders import load_variable
 from nbs_ruralscan.runtime.fuzzy import standardise
@@ -382,25 +383,33 @@ def reduce_correlated(
     threshold: float = 0.7,
     exclude_from_correlation: set[str] | None = None,
 ) -> tuple[list[str], dict]:
-    """6.3 -- pairwise Pearson correlation across standardised bands; cluster |r| > threshold;
+    """6.3 -- pairwise Kendall's tau across standardised bands; cluster |tau| > threshold;
     one representative per cluster, chosen by highest variance (Ani's principle 1 default --
     T4.is_cluster_default expert override not yet wired in, since draft-0 doesn't populate it).
     Returns (kept_variables, cluster_log) where cluster_log maps every variable to its
     representative.
 
+    Kendall's tau, not Pearson -- confirmed as the better fit against a live run: T4's fuzzy
+    functions routinely saturate large fractions of the AOI at exactly 1.0 (trapezoidal
+    plateaus, linear_increasing ceilings), producing heavy ties that Pearson's linear
+    assumption doesn't handle well and can inflate (two variables saturated for unrelated
+    reasons can still read as "correlated" in Pearson terms). Kendall is rank-based, built for
+    exactly this tied/non-linear situation, and doesn't assume a linear relationship the way
+    Pearson does.
+
     `exclude_from_correlation` (categorical/threshold-type T4 rows, e.g. land_cover,
-    protected_area_status) never enter the Pearson correlation graph at all -- confirmed as a
-    real risk, not just a style concern: Pearson correlation assumes continuous variables, and
-    the representative-by-variance rule means a low-cardinality categorical/binary variable
-    could outscore a genuinely continuous variable it happens to numerically correlate with,
-    silently dropping that continuous variable from the analysis. Each excluded variable is
-    returned as its own singleton cluster instead, exactly as if nothing correlated with it.
+    protected_area_status) never enter the correlation graph at all -- confirmed as a real
+    risk, not just a style concern: the representative-by-variance rule means a
+    low-cardinality categorical/binary variable could outscore a genuinely continuous variable
+    it happens to correlate with, silently dropping that continuous variable from the
+    analysis. Each excluded variable is returned as its own singleton cluster instead, exactly
+    as if nothing correlated with it.
     """
     exclude_from_correlation = exclude_from_correlation or set()
     variables = [v for v in standardised if v not in exclude_from_correlation]
     flat = {v: standardised[v].ravel().astype(float) for v in variables}
 
-    # union-find over the |r| > threshold graph
+    # union-find over the |tau| > threshold graph
     parent = {v: v for v in variables}
 
     def find(v):
@@ -418,8 +427,8 @@ def reduce_correlated(
         xa, xb = flat[a], flat[b]
         if np.std(xa) == 0 or np.std(xb) == 0:
             continue  # constant layer (e.g. synthetic edge case) -- correlation undefined
-        r = np.corrcoef(xa, xb)[0, 1]
-        if not np.isnan(r) and abs(r) > threshold:
+        tau, _p_value = kendalltau(xa, xb)
+        if not np.isnan(tau) and abs(tau) > threshold:
             union(a, b)
 
     clusters: dict[str, list[str]] = {}
